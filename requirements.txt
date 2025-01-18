@@ -1,0 +1,9 @@
+fastapi
+python-multipart
+pydantic
+dynaconf
+uvicorn
+unoserver
+jinja2
+markdown2
+python_odt_template
