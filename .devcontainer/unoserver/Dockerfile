@@ -6,6 +6,7 @@ USER root
 ADD unoserver/customfonts /usr/local/customfonts
 COPY unoserver/customfonts/install_fonts.sh /usr/local/bin/install_fonts.sh
 RUN chmod +x /usr/local/bin/install_fonts.sh
+USER worker
 RUN /usr/local/bin/install_fonts.sh
 
 # Switch back to the worker user
