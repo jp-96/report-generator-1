@@ -1,8 +1,0 @@
-[default]
-app_name = "Fast API - rptgen1"
-unoserver_host = "127.0.0.1"
-unoserver_port = 2003
-unoserver_location = "auto" 
-
-[development]
-unoserver_host = "unoserver"

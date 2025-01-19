@@ -1,7 +1,4 @@
 fastapi
 python-multipart
 pydantic
-dynaconf
 uvicorn
-unoserver
-jinja2
