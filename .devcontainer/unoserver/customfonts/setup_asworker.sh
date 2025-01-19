@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Install utils
-apt-get update && apt-get install -y \
-    unzip \
-    fontconfig
-
 # Create the fonts directory
 mkdir -p ~/.local/share/fonts
 
