@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rptgen1',     # The name of your package
-    version='0.1.0',    # The initial release version
+    version='0.1.1',    # The initial release version
     author='jp-96',     # Your name or organization
     author_email='jp-96@example.com',  # Your email
     description='report generator 1',  # A short description
