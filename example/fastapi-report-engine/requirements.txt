@@ -1,4 +1,6 @@
 fastapi
 python-multipart
 pydantic
+pydantic-settings
 uvicorn
+git+https://github.com/jp-96/report-generator-1.git
