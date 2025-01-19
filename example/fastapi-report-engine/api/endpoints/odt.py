@@ -6,9 +6,14 @@ from starlette.background import BackgroundTask
 from typing import List, Optional
 from rptgen1 import ODTReportGenerator, UnoClientConfig
 from ..models.odt_request import ODTRequest
+from config import get_settings
 
-UNOSERVER_HOST = "unoserver"
-uno_client_config=UnoClientConfig(server=UNOSERVER_HOST)
+settings = get_settings()
+uno_client_config=UnoClientConfig(
+    server=settings.unoserver_host,
+    port=settings.unoserver_port,
+    host_location=settings.unoserver_location
+)
 
 router = APIRouter()
 

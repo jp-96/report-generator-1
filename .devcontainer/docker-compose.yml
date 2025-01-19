@@ -1,7 +1,7 @@
 version: '2'
 services:
   rpt:
-    image: "rpt"
+    image: "report-engine"
     build:
       context: "../"
       dockerfile: ./.devcontainer/report-engine/Dockerfile
