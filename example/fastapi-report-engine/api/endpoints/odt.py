@@ -1,4 +1,4 @@
-# odt2.py
+# code/example/fastapi-report-engine/api/endpoints/odt.py
 
 import re
 from fastapi import APIRouter, File, UploadFile
@@ -7,9 +7,10 @@ from jinja2 import Template
 from starlette.background import BackgroundTask
 from typing import List, Optional
 from pydantic import BaseModel, Field, model_validator
-from rptgen1.odt_report_generator import ODTReportGenerator, UnoClientConfig
+from rptgen1 import ODTReportGenerator, UnoClientConfig
 
 UNOSERVER_HOST = "unoserver"
+uno_client_config=UnoClientConfig(server=UNOSERVER_HOST)
 
 router = APIRouter()
 
@@ -76,26 +77,26 @@ def render(report_request: ReportGenerationRequest, template: UploadFile, images
     Returns:
         FileResponse: The response containing the generated file.
     """
-    images = images or []
-    response_file_basename = sanitize_filename(Template(report_request.file_basename).render(report_request.document_content))
-
-    # Initialize the report generator
-    report_generator = ODTReportGenerator(
-        document_content=report_request.document_content,
-        file_basename=report_request.file_basename,
-        convert_to_pdf=report_request.convert_to_pdf,
-        pdf_filter_options=report_request.pdf_filter_options,
-        uno_client_config=UnoClientConfig(server=UNOSERVER_HOST)
-    )
-
-    # Save the template file
-    report_generator.save_template_file(template.file, template.filename)
-    
-    # Save the image files
-    for image in images:
-        report_generator.save_media_file(image.file, image.filename)
-
     try:
+        images = images or []
+        response_file_basename = sanitize_filename(Template(report_request.file_basename).render(report_request.document_content))
+
+        # Initialize the report generator
+        report_generator = ODTReportGenerator(
+            document_content=report_request.document_content,
+            file_basename=report_request.file_basename,
+            convert_to_pdf=report_request.convert_to_pdf,
+            pdf_filter_options=report_request.pdf_filter_options,
+            uno_client_config=uno_client_config
+        )
+
+        # Save the template file
+        report_generator.save_template_file(template.file, template.filename)
+        
+        # Save the image files
+        for image in images:
+            report_generator.save_media_file(image.file, image.filename)
+
         # Handle the request and generate the report
         file_type, result_file_path = report_generator.handle_request(template.filename)
         background_task = BackgroundTask(report_generator.cleanup_working_directories)

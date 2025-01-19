@@ -1,19 +1,13 @@
 # rptgen1/odt_report_generator.py
 
-from dataclasses import dataclass
 import os
 import shutil
 import tempfile
-from typing import BinaryIO, List, Optional
+from typing import BinaryIO
 from python_odt_template import ODTTemplate
 from python_odt_template.jinja import get_odt_renderer
 from unoserver import client
-
-@dataclass
-class UnoClientConfig:
-    server: str = "127.0.0.1"
-    port: str = "2003"
-    host_location: str = "auto"
+from .uno_client_config import UnoClientConfig
 
 class ODTReportGenerator:
     """
@@ -48,14 +42,17 @@ class ODTReportGenerator:
         self.template_dir_path = os.path.join(self.work_dir_path, "template")
         self.media_dir_path = os.path.join(self.work_dir_path, "media")
         self.result_dir_path = os.path.join(self.work_dir_path, "result")
-        self._initialize_directories()
         self.uno_client_config = uno_client_config
 
     def _initialize_directories(self):
         """Creates the necessary directories for templates, media, and results."""
-        os.makedirs(self.template_dir_path, exist_ok=True)
-        os.makedirs(self.media_dir_path, exist_ok=True)
-        os.makedirs(self.result_dir_path, exist_ok=True)
+        try:
+            os.makedirs(self.template_dir_path, exist_ok=True)
+            os.makedirs(self.media_dir_path, exist_ok=True)
+            os.makedirs(self.result_dir_path, exist_ok=True)
+        except Exception as e:
+            self.cleanup_working_directories()
+            raise e
     
     def cleanup_working_directories(self):
         """Cleans up the working directories by removing them."""
@@ -73,6 +70,7 @@ class ODTReportGenerator:
         Returns:
             str: The path of the saved file.
         """
+        self._initialize_directories()
         file_path = os.path.join(dir_path, filename)
         with open(file_path, 'wb') as f:
             f.write(file.read())
