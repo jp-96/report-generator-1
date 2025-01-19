@@ -1,12 +1,11 @@
 # code/example/fastapi-report-engine/api/endpoints/odt.py
 
 import re
-from fastapi import APIRouter, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, File, UploadFile, status
+from fastapi.responses import FileResponse, JSONResponse
 from jinja2 import Template
 from starlette.background import BackgroundTask
 from typing import List, Optional
-from pydantic import BaseModel, Field, model_validator
 from rptgen1 import ODTReportGenerator, UnoClientConfig
 from ..models.odt_request import ODTRequest
 
@@ -30,26 +29,26 @@ def sanitize_filename(filename: str) -> str:
     return re.sub(prohibited_chars_pattern, '_', filename)
 
 @router.post("/odt", summary="Render the report.", tags=["Render"])
-def render(odt_request: ODTRequest, template: UploadFile, images: Optional[List[UploadFile]] = File(None)):
+def render(odt_request: ODTRequest, template: UploadFile, medias: Optional[List[UploadFile]] = File(None)):
     """
-    Renders the report based on the provided template and images.
+    Renders the report based on the provided template and medias.
 
     Args:
         - odt_request (ReportGenerationRequest): The report generation request.
         - template (UploadFile): The template file.
-        - images (Optional[List[UploadFile]]): A list of image files.
+        - medias (Optional[List[UploadFile]]): A list of image files.
 
     Returns:
         - FileResponse: The response containing the generated file.
     """
     try:
-        images = images or []
-        sanitaized_file_basename = sanitize_filename(Template(odt_request.file_basename).render(odt_request.document_content))
+        medias = medias or []
+        rendered_file_basename = sanitize_filename(Template(odt_request.file_basename).render(odt_request.document_content))
 
         # Initialize the report generator
         report_generator = ODTReportGenerator(
             document_content=odt_request.document_content,
-            file_basename=sanitaized_file_basename,
+            file_basename=rendered_file_basename,
             convert_to_pdf=odt_request.convert_to_pdf,
             pdf_filter_options=odt_request.pdf_filter_options,
             uno_client_config=uno_client_config
@@ -59,8 +58,8 @@ def render(odt_request: ODTRequest, template: UploadFile, images: Optional[List[
         report_generator.save_template_file(template.file, template.filename)
         
         # Save the image files
-        for image in images:
-            report_generator.save_media_file(image.file, image.filename)
+        for f in medias:
+            report_generator.save_media_file(f.file, f.filename)
 
         # Handle the request and generate the report
         file_type, result_file_path = report_generator.handle_request(template.filename)
@@ -70,16 +69,19 @@ def render(odt_request: ODTRequest, template: UploadFile, images: Optional[List[
         if file_type == "pdf":
             return FileResponse(
                 path=result_file_path,
-                filename=sanitaized_file_basename + ".pdf",
+                filename=rendered_file_basename + ".pdf",
                 background=background_task
             )
         else:
             return FileResponse(
                 path=result_file_path,
                 media_type="application/octet-stream",
-                filename=sanitaized_file_basename + ".odt",
+                filename=rendered_file_basename + ".odt",
                 background=background_task
             )
 
     except Exception as e:
-        return {"message": "An error occurred during processing"}
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={"message": "An error occurred during processing"},
+        )
