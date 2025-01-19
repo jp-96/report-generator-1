@@ -50,14 +50,10 @@
 ```json
 
 {
-    "convert_to_pdf": true,
-    "pdf_filter_options": {
-        "Watermark": "draft（下書き）",
-        "SelectPdfVersion": "3"
-    },
-    "document_content": {
-        "image": "writer.png"
-    }
+  "document_content": {"image": "writer.png"},
+  "file_basename": "rendered_{{image}}",
+  "convert_to_pdf": true,
+  "pdf_filter_options": {}
 }
 
 ```
