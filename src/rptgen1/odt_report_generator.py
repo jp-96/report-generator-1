@@ -1,13 +1,34 @@
 # rptgen1/odt_report_generator.py
 
 import os
+import re
 import shutil
 import tempfile
 from typing import BinaryIO
+from jinja2 import Template
 from python_odt_template import ODTTemplate
 from python_odt_template.jinja import get_odt_renderer
 from unoserver import client
 from .uno_client_config import UnoClientConfig
+
+# Pattern for prohibited characters and control codes
+prohibited_chars_pattern = r'[<>:"/\\|?*\r\n\t]'
+
+def render_file_basename(file_basename: str, document_content: dict) -> str:
+    """
+    Cleans up the filename by replacing prohibited characters and control codes with underscores.
+
+    Args:
+        file_basename (str): The original filename.
+        document_content (dict): The content used in the template.
+
+    Returns:
+        str: The sanitized filename, ensuring the rendered file basename is clean and safe to use.
+    """
+    # Render the file basename using the template content
+    rendered_file_basename = Template(file_basename).render(document_content)
+    # Replace prohibited characters and control codes with underscores
+    return re.sub(prohibited_chars_pattern, '_', rendered_file_basename)
 
 class ODTReportGenerator:
     """
@@ -35,7 +56,7 @@ class ODTReportGenerator:
             pdf_filter_options (dict): Options for the PDF export filter to be applied during conversion.
         """
         self.document_content = document_content
-        self.file_basename = file_basename
+        self.rendered_file_basename = render_file_basename(file_basename, document_content)
         self.convert_to_pdf = convert_to_pdf
         self.pdf_filter_options = pdf_filter_options
         self.work_dir_path = tempfile.mkdtemp()
@@ -122,7 +143,7 @@ class ODTReportGenerator:
             if self.convert_to_pdf:
                 return self._convert_to_pdf(odt_result_file_path)
 
-            return "odt", odt_result_file_path
+            return odt_result_file_path, "application/octet-stream", self.rendered_file_basename + ".odt"
 
         except Exception as e:
             self.cleanup_working_directories()
@@ -155,4 +176,4 @@ class ODTReportGenerator:
             self.uno_client_config.host_location
         ).convert(**convert_command)
 
-        return "pdf", pdf_result_file_path
+        return pdf_result_file_path, "application/pdf", self.rendered_file_basename + ".pdf"
