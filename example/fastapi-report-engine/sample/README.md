@@ -9,13 +9,7 @@
 ```json
 
 {
-    "convert_to_pdf": true,
-    "pdf_filter_options": {
-        "Watermark": "draft（下書き）",
-        "SelectPdfVersion": "3"
-    },
-    "document_content": {
-        "image": "writer.png",
+    "context": {
         "document": {
             "datetime": "2025/01/23 12:34",
             "md_sample": "マークアップテキストです。"
@@ -37,6 +31,12 @@
             {"country": "Chile", "capital": "Santiago"},
             {"country": "Mexico", "capital": "MExico City", "cities": ["puebla", "cancun"]}
         ]
+    },
+    "file_basename": "renderd_{{document.datetime}}",
+    "convert_to_pdf": true,
+    "pdf_filter_options": {
+        "Watermark": "draft（下書き）",
+        "SelectPdfVersion": "3"
     }
 }
 
@@ -50,8 +50,11 @@
 ```json
 
 {
-  "document_content": {"image": "writer.png"},
-  "file_basename": "rendered_{{image}}",
+  "context": {
+    "image":"writer.png",
+    "city":"奈良県\u845B\uDB40\uDD02城市"
+  },
+  "file_basename": "rendered_{{city}}",
   "convert_to_pdf": true,
   "pdf_filter_options": {}
 }
