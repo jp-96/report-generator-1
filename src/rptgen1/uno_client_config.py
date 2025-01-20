@@ -1,6 +1,7 @@
-# rptgen1/uno_client_config.py
+# code/src/rptgen1/uno_client_config.py
 
 from dataclasses import dataclass
+
 
 @dataclass
 class UnoClientConfig:
