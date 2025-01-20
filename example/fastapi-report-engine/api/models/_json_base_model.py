@@ -2,8 +2,9 @@
 
 from pydantic import BaseModel, model_validator
 
+
 class JsonBaseModel(BaseModel):
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
     def validate_json(cls, value):
         if isinstance(value, str):

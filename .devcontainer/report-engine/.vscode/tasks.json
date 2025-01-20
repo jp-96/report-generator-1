@@ -9,7 +9,7 @@
             "command": "bash",
             "args": [
                 "-c",
-                "pip uninstall -y rptgen1 && python setup.py sdist && pip install ."
+                "sudo pip uninstall -y rptgen1 && python -m build && sudo pip install ."
             ],
             "options": {
                 "cwd": "${workspaceFolder}/code"  // Set the working directory to 'code' folder

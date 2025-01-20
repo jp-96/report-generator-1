@@ -9,10 +9,12 @@ pip install git+https://github.com/jp-96/report-generator-1.git
 ## Install (local)
 
 ```bash
-cd code
-pip uninstall rptgen1
+pip install --upgrade build
 
-python setup.py sdist
-pip install .
+cd code
+
+sudo pip uninstall rptgen1
+python -m build
+sudo pip install .
 
 ```
