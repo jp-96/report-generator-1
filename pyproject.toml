@@ -18,18 +18,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rptgen1"
-version = "0.1.1"
+version = "0.1.2"
 # dynamic = ["version"]
-dependencies = [
-  "python_odt_template[standard]"
-]
+dependencies = ["python_odt_template[standard]", "unoserver"]
 requires-python = ">=3.8"
-authors = [{ name = "jp-96"}]
+authors = [{ name = "jp-96" }]
 description = "A small example package"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-keywords = ["egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor"]
+keywords = ["python-odt-template", "unoserver", "report-engine"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
@@ -37,4 +35,4 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/jp-96/report-generator-1"
-Repository  = "https://github.com/jp-96/report-generator-1"
+Repository = "https://github.com/jp-96/report-generator-1"
