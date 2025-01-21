@@ -55,7 +55,8 @@
 		"ms-python.vscode-pylance",
 		"mechatroner.rainbow-csv",
 		"tamasfe.even-better-toml",
-		"ms-python.black-formatter"
+		"ms-python.black-formatter",
+		"ms-python.debugpy"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [9000],

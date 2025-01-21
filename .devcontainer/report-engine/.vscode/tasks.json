@@ -4,28 +4,76 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build and Install Package",
+            "label": "setup utils",
             "type": "shell",
-            "command": "bash",
+            "command": "sudo",
             "args": [
-                "-c",
-                "sudo pip uninstall -y rptgen1 && python -m build && sudo pip install ."
+                "pip3",
+                "install",
+                "--upgrade",
+                "build",
+                "pip",
+                "--root-user-action=ignore" // Suppress WARNING
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "uninstall package",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "pip3",
+                "uninstall",
+                "-y",
+                "rptgen1",
+                "--root-user-action=ignore" // Suppress WARNING
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build package",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "python",
+                "-m",
+                "build"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/code"  // Set the working directory to 'code' folder
+                "cwd": "${workspaceFolder}/code" // Set the working directory to 'code' folder
             },
+            "problemMatcher": []
+        },
+        {
+            "label": "install package",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "pip3",
+                "install",
+                "--upgrade",
+                ".",
+                "--root-user-action=ignore" // Suppress WARNING
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/code" // Set the working directory to 'code' folder
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "rebuild package",
+            "dependsOn": [
+                "setup utils",
+                "uninstall package",
+                "build package",
+                "install package" // Suppress WARNING
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
+            }
         }
     ]
 }
-

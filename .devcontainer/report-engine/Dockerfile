@@ -38,6 +38,9 @@ RUN mkdir /opt/report-engine/.vscode \
 RUN mkdir /home/vscode/.vscode-server \
     && chown vscode:vscode /home/vscode/.vscode-server
 
+# Upgrade pip
+RUN pip3 install --upgrade pip
+
 # [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
 COPY example/fastapi-report-engine/requirements.txt /tmp/pip-tmp/
 RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \

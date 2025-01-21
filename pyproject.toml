@@ -16,10 +16,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "src/rptgen1/__about__.py"
+
 [project]
 name = "rptgen1"
-version = "0.1.2"
-# dynamic = ["version"]
+dynamic = ["version"]
 dependencies = ["python_odt_template[standard]", "unoserver"]
 requires-python = ">=3.8"
 authors = [{ name = "jp-96" }]
