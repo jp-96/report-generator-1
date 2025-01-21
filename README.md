@@ -3,18 +3,18 @@
 ## Install
 
 ```bash
-pip install git+https://github.com/jp-96/report-generator-1.git
+sudo pip3 install --upgrade git+https://github.com/jp-96/report-generator-1.git --root-user-action=ignore
 ```
 
 ## Install (local)
 
 ```bash
-pip install --upgrade build
+
+sudo pip3 install --upgrade build pip
+sudo pip3 uninstall -y rptgen1
 
 cd code
-
-sudo pip uninstall rptgen1
 python -m build
-sudo pip install .
+sudo pip3 install --upgrade . --root-user-action=ignore
 
 ```
