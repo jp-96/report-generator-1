@@ -35,7 +35,7 @@ def simple_template_odt_file_data(sample_file_directory):
 
 @pytest.fixture
 def readme_md_file_text(sample_file_directory):
-    file_path = os.path.join(sample_file_directory, "README.md")
+    file_path = os.path.join(sample_file_directory, "../../README.md")
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
