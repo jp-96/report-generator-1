@@ -62,3 +62,14 @@ Once the server is running, you can access the documentation for the API using o
 1. http://localhost:8002/docs
 
 These URLs provide an interactive interface where you can test the endpoints and see the available functionalities of the FastAPI Report Engine.
+
+# Credits
+
+This project uses the following libraries:
+
+- [python-odt-template](https://github.com/Tobi-De/python-odt-template) by Tobi-De
+- [python-docx-template](https://github.com/elapouya/python-docx-template) by elapouya
+- [unoserver](https://github.com/unoconv/unoserver) by unoconv
+- [unoserver-docker](https://github.com/unoconv/unoserver-docker) by unoconv
+
+The developers and maintainers of these libraries are gratefully acknowledged for their contributions to the open-source community.
