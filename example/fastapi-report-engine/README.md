@@ -1,10 +1,20 @@
-# sample
+# Example - FastAPI Report Engine
 
+```bash
+cd code/example/fastapi-report-engine
+python main.py
+```
 
-## simple_template
+http://localhost/docs or http://localhost:8002/docs
 
-- template file: `simple_template.odt` or `simple_template.ja.odt`
-- images: (unckecked: `Send empty value`)
+samples: `./code/tests/samples/odt/inputs`
+
+## simple_template.odt
+
+template: `simple_template.odt`
+medias: (unckecked: `Send empty value`)
+
+odt_request:
 
 ```json
 
@@ -12,7 +22,7 @@
     "context": {
         "document": {
             "datetime": "2025/01/23 12:34",
-            "md_sample": "マークアップテキストです。"
+            "md_sample": "# This is an H1\n## This is an H2\nMarkdown is a lightweight markup language."
         },
         "countries": [
             {
@@ -21,7 +31,7 @@
                 "cities": ["miami", "new york", "california", "texas", "atlanta"]
             },
             {"country": "England", "capital": "London", "cities": ["gales"]},
-            {"country": "Japan", "capital": "奈良県\u845B\uDB40\uDD02城市", "cities": ["hiroshima", "nagazaki"]},
+            {"country": "Japan", "capital": "Tokio", "cities": ["hiroshima", "nagazaki"]},
             {
                 "country": "Nicaragua",
                 "capital": "Managua",
@@ -35,26 +45,26 @@
     "file_basename": "renderd_{{document.datetime}}",
     "convert_to_pdf": true,
     "pdf_filter_options": {
-        "Watermark": "draft（下書き）",
+        "Watermark": "draft",
         "SelectPdfVersion": "3"
     }
 }
 
 ```
 
-# template
+# template.odt
 
-- template file: `template.odt`
-- images: `writer.png`
+- template: `template.odt`
+- medias: `writer.png`
+- odt_request:
 
 ```json
 
 {
   "context": {
-    "image":"writer.png",
-    "city":"奈良県\u845B\uDB40\uDD02城市"
+    "image":"writer.png"
   },
-  "file_basename": "rendered_{{city}}",
+  "file_basename": "rendered_{{image}}",
   "convert_to_pdf": true,
   "pdf_filter_options": {}
 }

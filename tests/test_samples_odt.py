@@ -1,4 +1,6 @@
-import datetime
+# code/tests/test_samples_odt.py
+
+from datetime import datetime
 from io import BytesIO
 import shutil
 import pytest
@@ -15,27 +17,27 @@ def current_directory():
 
 
 @pytest.fixture
-def sample_file_directory(current_directory):
-    return os.path.join(current_directory, "sample")
+def inputs_directory(current_directory):
+    return os.path.join(current_directory, "samples/odt/inputs")
 
 
 @pytest.fixture
-def result_file_directory(current_directory):
-    result_dir = os.path.join(current_directory, "result")
+def results_directory(current_directory):
+    result_dir = os.path.join(current_directory, "results")
     os.makedirs(result_dir, exist_ok=True)
     return result_dir
 
 
 @pytest.fixture
-def simple_template_odt_file_data(sample_file_directory):
-    file_path = os.path.join(sample_file_directory, "simple_template.odt")
+def simple_template_odt_file_data(inputs_directory):
+    file_path = os.path.join(inputs_directory, "simple_template.odt")
     with open(file_path, "rb") as file:
         return BytesIO(file.read())
 
 
 @pytest.fixture
-def readme_md_file_text(sample_file_directory):
-    file_path = os.path.join(sample_file_directory, "../../README.md")
+def readme_md_file_text(inputs_directory):
+    file_path = os.path.join(inputs_directory, "README.md")
     with open(file_path, "r", encoding="utf-8") as file:
         return file.read()
 
@@ -44,7 +46,7 @@ def readme_md_file_text(sample_file_directory):
 def simple_template_odt_context(readme_md_file_text):
     return {
         "document": {
-            "datetime": datetime.datetime.now(),
+            "datetime": datetime.now(),
             "md_sample": readme_md_file_text,
         },
         "countries": [
@@ -76,15 +78,15 @@ def simple_template_odt_context(readme_md_file_text):
 
 
 @pytest.fixture
-def template_odt_file_data(sample_file_directory):
-    file_path = os.path.join(sample_file_directory, "template.odt")
+def template_odt_file_data(inputs_directory):
+    file_path = os.path.join(inputs_directory, "template.odt")
     with open(file_path, "rb") as file:
         return BytesIO(file.read())
 
 
 @pytest.fixture
-def writer_png_file_data(sample_file_directory):
-    file_path = os.path.join(sample_file_directory, "writer.png")
+def writer_png_file_data(inputs_directory):
+    file_path = os.path.join(inputs_directory, "writer.png")
     with open(file_path, "rb") as file:
         return BytesIO(file.read())
 
@@ -94,7 +96,7 @@ def template_odt_context():
     return {"image": "writer.png"}
 
 def test_simple_template_odt(
-    result_file_directory,
+    results_directory,
     simple_template_odt_context,
     simple_template_odt_file_data
 ):
@@ -110,13 +112,13 @@ def test_simple_template_odt(
     assert result.mime_type == "application/pdf"
     assert result.file_name.endswith(".pdf")
     assert os.path.exists(result.file_path)
-    shutil.copy2(result.file_path, result_file_directory)
+    shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
     assert not os.path.exists(result.file_path)
 
 
 def test_template_odt(
-    result_file_directory,
+    results_directory,
     template_odt_context,
     template_odt_file_data,
     writer_png_file_data,
@@ -134,6 +136,6 @@ def test_template_odt(
     assert result.mime_type == "application/pdf"
     assert result.file_name.endswith(".pdf")
     assert os.path.exists(result.file_path)
-    shutil.copy2(result.file_path, result_file_directory)
+    shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
     assert not os.path.exists(result.file_path)

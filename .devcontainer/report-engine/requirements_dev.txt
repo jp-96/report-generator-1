@@ -3,4 +3,6 @@ python-multipart
 pydantic
 pydantic-settings
 uvicorn
+pytest
+pytest-cov
 git+https://github.com/jp-96/report-generator-1.git

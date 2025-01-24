@@ -1,17 +1,29 @@
 # Use the base image from ghcr.io/unoconv/unoserver-docker
 FROM ghcr.io/unoconv/unoserver-docker
 
-# Add custom fonts, copy and set up the font script
+# As root
 USER root
+
+# Install custom fonts
 ADD unoserver/customfonts /usr/local/customfonts
-COPY unoserver/customfonts/setup_asroot.sh /usr/local/bin/setup_asroot.sh
-RUN chmod +x /usr/local/bin/setup_asroot.sh
-COPY unoserver/customfonts/setup_asworker.sh /usr/local/bin/setup_asworker.sh
-RUN chmod +x /usr/local/bin/setup_asworker.sh
+WORKDIR /usr/local/customfonts
 
-# Run as root
-RUN /usr/local/bin/setup_asroot.sh
+# Install Japanese fonts
+# ###################################
+#   IPA FONT LICENSE AGREEMENT V1.0
+# https://moji.or.jp/ipafont/license/
+# ###################################
+RUN cd archiveipa \
+    # Install folder
+    && mkdir -p /usr/share/fonts/ipa \
+	# IPAmj Mincho Font
+    && unzip ipamjm00601.zip -d /usr/share/fonts/ipa/ipamjm0601 \
+    # IPAex Font（2 fonts）
+    && unzip IPAexfont00401.zip -d /usr/share/fonts/ipa/ipaexfont00401 \
+    # IPA Font（4 fonts）
+    && unzip IPAfont00303.zip -d /usr/share/fonts/ipa/ipafont00303 \
+    # Build font information cache files
+    && fc-cache -vf
 
-# Run as worker
-USER worker
-RUN /usr/local/bin/setup_asworker.sh
+# As worker
+USER ${UID}
