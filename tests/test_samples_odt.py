@@ -23,7 +23,7 @@ def inputs_directory(current_directory):
 
 @pytest.fixture
 def results_directory(current_directory):
-    result_dir = os.path.join(current_directory, "results")
+    result_dir = os.path.join(current_directory, "../results")
     os.makedirs(result_dir, exist_ok=True)
     return result_dir
 

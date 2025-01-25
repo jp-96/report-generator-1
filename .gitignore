@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 
 # Unit test
-/tests/results
+results/
