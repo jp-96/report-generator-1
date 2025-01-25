@@ -5,3 +5,5 @@ pydantic-settings
 uvicorn
 pytest
 pytest-cov
+python_odt_template[standard]
+unoserver
