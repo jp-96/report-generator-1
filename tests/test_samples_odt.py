@@ -1,6 +1,6 @@
 # code/tests/test_samples_odt.py
 
-from datetime import datetime
+import datetime
 from io import BytesIO
 import shutil
 import pytest
@@ -36,6 +36,14 @@ def simple_template_odt_file_data(inputs_directory):
 
 
 @pytest.fixture
+def currnet_datetime():
+    td = datetime.timedelta(hours=9)
+    tz = datetime.timezone(td, "JST")
+    dt = datetime.datetime.now(tz)
+    return dt
+
+
+@pytest.fixture
 def readme_md_file_text(inputs_directory):
     file_path = os.path.join(inputs_directory, "README.md")
     with open(file_path, "r", encoding="utf-8") as file:
@@ -43,10 +51,10 @@ def readme_md_file_text(inputs_directory):
 
 
 @pytest.fixture
-def simple_template_odt_context(readme_md_file_text):
+def simple_template_odt_context(currnet_datetime, readme_md_file_text):
     return {
         "document": {
-            "datetime": datetime.now(),
+            "datetime": currnet_datetime,
             "md_sample": readme_md_file_text,
         },
         "countries": [
@@ -95,10 +103,27 @@ def writer_png_file_data(inputs_directory):
 def template_odt_context():
     return {"image": "writer.png"}
 
+
 def test_simple_template_odt(
-    results_directory,
-    simple_template_odt_context,
-    simple_template_odt_file_data
+    results_directory, simple_template_odt_context, simple_template_odt_file_data
+):
+    generator = ODTReportGenerator(
+        file_basename="simple_{{document.datetime}}",
+        uno_client_config=UnoClientConfig(server="unoserver"),
+    )
+    generator.save_template_file(simple_template_odt_file_data, "template.odt")
+    result = generator.render(simple_template_odt_context)
+    assert isinstance(result, ReportGeneratorResult)
+    assert result.mime_type == "application/vnd.oasis.opendocument.text"
+    assert result.file_name.endswith(".odt")
+    assert os.path.exists(result.file_path)
+    shutil.copy2(result.file_path, results_directory)
+    generator.cleanup_working_directories()
+    assert not os.path.exists(result.file_path)
+
+
+def test_simple_template_odt_to_pdf(
+    results_directory, simple_template_odt_context, simple_template_odt_file_data
 ):
     generator = ODTReportGenerator(
         file_basename="simple_{{document.datetime}}",
@@ -118,6 +143,28 @@ def test_simple_template_odt(
 
 
 def test_template_odt(
+    results_directory,
+    template_odt_context,
+    template_odt_file_data,
+    writer_png_file_data,
+):
+    generator = ODTReportGenerator(
+        file_basename="rendered_{{image}}",
+        uno_client_config=UnoClientConfig(server="unoserver"),
+    )
+    generator.save_template_file(template_odt_file_data, "template.odt")
+    generator.save_media_file(writer_png_file_data, "writer.png")
+    result = generator.render(template_odt_context)
+    assert isinstance(result, ReportGeneratorResult)
+    assert result.mime_type == "application/vnd.oasis.opendocument.text"
+    assert result.file_name.endswith(".odt")
+    assert os.path.exists(result.file_path)
+    shutil.copy2(result.file_path, results_directory)
+    generator.cleanup_working_directories()
+    assert not os.path.exists(result.file_path)
+
+
+def test_template_odt_to_pdf(
     results_directory,
     template_odt_context,
     template_odt_file_data,
