@@ -47,3 +47,29 @@ pytest
 ```
 
 The generated files from the tests will be saved in the `tests/result` directory.
+
+## Example - FastAPI Report Engine
+
+To run the FastAPI example for the Report Engine, follow these steps:
+
+```bash
+cd code/example/fastapi-report-engine
+python main.py
+```
+Once the server is running, you can access the documentation for the API using one of the following URLs:
+
+1. http://localhost/docs
+1. http://localhost:8002/docs
+
+These URLs provide an interactive interface where you can test the endpoints and see the available functionalities of the FastAPI Report Engine.
+
+# Credits
+
+This project uses the following libraries:
+
+- [python-odt-template](https://github.com/Tobi-De/python-odt-template) by Tobi-De
+- [python-docx-template](https://github.com/elapouya/python-docx-template) by elapouya
+- [unoserver](https://github.com/unoconv/unoserver) by unoconv
+- [unoserver-docker](https://github.com/unoconv/unoserver-docker) by unoconv
+
+The developers and maintainers of these libraries are gratefully acknowledged for their contributions to the open-source community.

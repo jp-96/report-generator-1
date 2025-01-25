@@ -3,15 +3,15 @@ services:
   rpt:
     image: "report-engine"
     build:
-      context: "../"
-      dockerfile: ./.devcontainer/report-engine/Dockerfile
+      context: "."
+      dockerfile: ./report-engine/Dockerfile
       args:
         # Update 'VARIANT' to pick a Python version: 3, 3.10, 3.11, 3.12
         # Available image variants: https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
         VARIANT: "3"
     volumes:
       - ..:/opt/report-engine/code:cached
-      - ../.devcontainer/report-engine/.vscode:/opt/report-engine/.vscode:cached
+      - ./report-engine/.vscode:/opt/report-engine/.vscode:cached
     depends_on:
       - lb
       - unoserver
@@ -28,5 +28,5 @@ services:
     image: "unoserver"
     build:
       context: "."
-      dockerfile: unoserver/Dockerfile
+      dockerfile: ./unoserver/Dockerfile
 
