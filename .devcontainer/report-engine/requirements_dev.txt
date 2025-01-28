@@ -6,4 +6,5 @@ uvicorn
 pytest
 pytest-cov
 python_odt_template[standard]
+docxtpl
 unoserver
