@@ -41,7 +41,7 @@ class ODTReportGenerator(BaseReportGenerator):
     def render(self, context: dict) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
-            odt_result_file_path = os.path.join(
+            odt_result_file_path = self._join_path(
                 self.result_dir_path, rendered_file_basename + ".odt"
             )
             with ODTTemplate(self.template_file_path) as template:

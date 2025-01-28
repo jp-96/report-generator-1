@@ -33,8 +33,12 @@ class BaseReportGenerator(ABC):
         os.makedirs(dir_path, exist_ok=True)
         return dir_path
 
-    def _save_file(self, file: BinaryIO, filename: str, dir_path: str) -> str:
+    def _join_path(dir_path: str, filename: str) -> str:
         file_path = os.path.join(dir_path, filename)
+        return file_path
+
+    def _save_file(self, file: BinaryIO, filename: str, dir_path: str) -> str:
+        file_path = self._join_path(dir_path, filename)
         with open(file_path, "wb") as f:
             f.write(file.read())
         return file_path

@@ -1,15 +1,15 @@
-# code/src/rptgen1/odt_report_generator.py
+# code/src/rptgen1/docx_report_generator.py
 
+import re
+from docxtpl import DocxTemplate
 import os
 from typing import BinaryIO
-from python_odt_template import ODTTemplate
-from python_odt_template.jinja import get_odt_renderer
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult, render_file_basename
 from .base_report_generator import BaseReportGenerator
 
 
-class ODTReportGenerator(BaseReportGenerator):
+class DOCXReportGenerator(BaseReportGenerator):
     def __init__(
         self,
         file_basename: str,
@@ -38,22 +38,22 @@ class ODTReportGenerator(BaseReportGenerator):
             self.cleanup_working_directories()
             raise e
 
-    def render(self, context: dict) -> ReportGeneratorResult:
+    def render(self, context: dict, image_mapping: dict) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
-            odt_result_file_path = os.path.join(
-                self.result_dir_path, rendered_file_basename + ".odt"
+            docx_result_file_path = self._join_path(
+                self.result_dir_path, rendered_file_basename + ".docx"
             )
-            with ODTTemplate(self.template_file_path) as template:
-                get_odt_renderer(self.media_dir_path).render(
-                    template,
-                    context=context,
-                )
-                template.pack(odt_result_file_path)
+            tpl = DocxTemplate(self.template_file_path)
+            for embedded_file, dst_file in image_mapping.items():
+                dst_file_path = self._join_path(self.media_dir_path, dst_file)
+                tpl.replace_pic(embedded_file, dst_file_path)
+            tpl.render(context=context)
+            tpl.save(docx_result_file_path)
 
             if self.convert_to_pdf:
                 pdf_result_file_path = self._convert_to_pdf(
-                    odt_result_file_path, rendered_file_basename
+                    docx_result_file_path, rendered_file_basename
                 )
                 return ReportGeneratorResult(
                     pdf_result_file_path,
@@ -62,9 +62,9 @@ class ODTReportGenerator(BaseReportGenerator):
                 )
             else:
                 return ReportGeneratorResult(
-                    odt_result_file_path,
+                    docx_result_file_path,
                     "application/vnd.oasis.opendocument.text",
-                    rendered_file_basename + ".odt",
+                    rendered_file_basename + ".docx",
                 )
 
         except Exception as e:
