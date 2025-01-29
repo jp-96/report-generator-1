@@ -10,14 +10,14 @@ path = "src/rptgen1/__about__.py"
 [project]
 name = "rptgen1"
 dynamic = ["version"]
-dependencies = ["unoserver", "python_odt_template[standard]"]
+dependencies = ["unoserver", "python_odt_template[standard]", "docxtpl"]
 requires-python = ">=3.8"
 authors = [{ name = "jp-96" }]
 description = "A small example package"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-keywords = ["report-engine", "unoserver", "python-odt-template", "jinja2"]
+keywords = ["report-engine", "unoserver", "python-odt-template", "python-docx-template", "jinja2"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
