@@ -173,3 +173,4 @@ cython_debug/
 # Unit test
 results/
 /tests/samples/docx/tests/output
+/tests/samples/odt/outputs

@@ -50,4 +50,5 @@ with ODTTemplate("inputs/template.odt") as template:
     template.pack(
         outputs_dir / "template_rendered.odt",
     )
+    unoconvert.host = "unoserver"   # set host
     unoconvert.convert(outputs_dir / "template_rendered.odt", outputs_dir)
