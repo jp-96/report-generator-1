@@ -38,7 +38,7 @@ class DOCXReportGenerator(BaseReportGenerator):
             self.cleanup_working_directories()
             raise e
 
-    def render(self, context: dict, image_mapping: dict) -> ReportGeneratorResult:
+    def render(self, context: dict = {}, image_mapping: dict = {}) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
             docx_result_file_path = self._join_path(
@@ -63,7 +63,7 @@ class DOCXReportGenerator(BaseReportGenerator):
             else:
                 return ReportGeneratorResult(
                     docx_result_file_path,
-                    "application/vnd.oasis.opendocument.text",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     rendered_file_basename + ".docx",
                 )
 

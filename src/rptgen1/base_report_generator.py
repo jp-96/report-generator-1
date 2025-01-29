@@ -33,7 +33,7 @@ class BaseReportGenerator(ABC):
         os.makedirs(dir_path, exist_ok=True)
         return dir_path
 
-    def _join_path(dir_path: str, filename: str) -> str:
+    def _join_path(self, dir_path: str, filename: str) -> str:
         file_path = os.path.join(dir_path, filename)
         return file_path
 
