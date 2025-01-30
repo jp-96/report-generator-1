@@ -4,5 +4,6 @@ from pydantic import Field
 from ._request_base_model import RequestBaseModel
 
 
-class ODTRequest(RequestBaseModel):
+class DOCXRequest(RequestBaseModel):
     context: dict = Field(default={})
+    image_mapping: dict = Field(default={})
