@@ -4,7 +4,6 @@ import os
 from typing import BinaryIO
 from python_odt_template import ODTTemplate
 from python_odt_template.jinja import get_odt_renderer
-from unoserver import client
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult, render_file_basename
 from .base_report_generator import BaseReportGenerator
@@ -42,7 +41,7 @@ class ODTReportGenerator(BaseReportGenerator):
     def render(self, context: dict) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
-            odt_result_file_path = os.path.join(
+            odt_result_file_path = self._join_path(
                 self.result_dir_path, rendered_file_basename + ".odt"
             )
             with ODTTemplate(self.template_file_path) as template:

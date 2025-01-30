@@ -18,19 +18,6 @@
             "problemMatcher": []
         },
         {
-            "label": "uninstall package",
-            "type": "shell",
-            "command": "sudo",
-            "args": [
-                "pip3",
-                "uninstall",
-                "-y",
-                "rptgen1",
-                "--root-user-action=ignore" // Suppress WARNING
-            ],
-            "problemMatcher": []
-        },
-        {
             "label": "build package",
             "type": "shell",
             "command": "sudo",
@@ -42,6 +29,19 @@
             "options": {
                 "cwd": "${workspaceFolder}/code" // Set the working directory to 'code' folder
             },
+            "problemMatcher": []
+        },
+        {
+            "label": "uninstall package",
+            "type": "shell",
+            "command": "sudo",
+            "args": [
+                "pip3",
+                "uninstall",
+                "-y",
+                "rptgen1",
+                "--root-user-action=ignore" // Suppress WARNING
+            ],
             "problemMatcher": []
         },
         {
@@ -61,12 +61,10 @@
             "problemMatcher": []
         },
         {
-            "label": "rebuild package",
+            "label": "rebuild",
             "dependsOn": [
                 "setup utils",
-                "uninstall package",
-                "build package",
-                "install package" // Suppress WARNING
+                "build package"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": [],
