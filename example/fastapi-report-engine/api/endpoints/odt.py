@@ -1,7 +1,7 @@
 # code/example/fastapi-report-engine/api/endpoints/odt.py
 
-from fastapi import APIRouter, File, UploadFile, status
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 from typing import List, Optional
 from rptgen1 import ODTReportGenerator, UnoClientConfig
@@ -38,7 +38,11 @@ def render(
     return FileResponse(
         path=generated.file_path,
         # Set media_type to 'application/octet-stream' to ensure the file is downloaded as binary data.
-        media_type=generated.mime_type if odt_request.convert_to_pdf else "application/octet-stream",
+        media_type=(
+            generated.mime_type
+            if odt_request.convert_to_pdf
+            else "application/octet-stream"
+        ),
         filename=generated.file_name,
         background=BackgroundTask(report_generator.cleanup_working_directories),
     )

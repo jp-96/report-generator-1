@@ -7,9 +7,9 @@ python main.py
 
 http://localhost/docs or http://localhost:8002/docs
 
-samples: `./code/tests/samples/odt/inputs`
+samples: `./code/tests/samples/odt/inputs`, `./code/tests/samples/docx/tests/templates`
 
-## simple_template.odt
+## odt - simple_template.odt
 
 template: `simple_template.odt`
 medias: (unckecked: `Send empty value`)
@@ -52,7 +52,7 @@ odt_request:
 
 ```
 
-# template.odt
+## odt - template.odt
 
 - template: `template.odt`
 - medias: `writer.png`
@@ -61,12 +61,60 @@ odt_request:
 ```json
 
 {
-  "context": {
-    "image":"writer.png"
-  },
-  "file_basename": "rendered_{{image}}",
-  "convert_to_pdf": true,
-  "pdf_filter_options": {}
+    "context": {
+        "image":"writer.png"
+    },
+    "file_basename": "rendered_{{image}}",
+    "convert_to_pdf": true,
+    "pdf_filter_options": {}
+}
+
+```
+
+## docx - order_tpl.docx
+
+- template: `order_tpl.docx`
+- medias: (unckecked: `Send empty value`)
+- docx_request:
+
+```json
+
+{
+    "context": {
+        "customer_name": "Eric",
+        "items": [
+            {"desc": "Python interpreters", "qty": 2, "price": "FREE"},
+            {"desc": "Django projects", "qty": 5403, "price": "FREE"},
+            {"desc": "Guido", "qty": 1, "price": "100,000,000.00"}
+        ],
+        "in_europe": true,
+        "is_paid": false,
+        "company_name": "The World Wide company",
+        "total_price": "100,000,000.00"
+    },
+    "file_basename": "rendered_{{customer_name}}",
+    "convert_to_pdf": true,
+    "pdf_filter_options": {}
+}
+
+```
+
+## docx - replace_picture_tpl.docx
+
+- template: `replace_picture_tpl.docx`
+- medias: `python.png`
+- docx_request:
+
+```json
+
+{
+    "context": {
+        "image":"writer.png"
+    },
+    "image_mapping": {"python_logo.png": "python.png"},
+    "file_basename": "rendered_{{image}}",
+    "convert_to_pdf": true,
+    "pdf_filter_options": {}
 }
 
 ```
