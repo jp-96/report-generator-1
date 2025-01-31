@@ -25,7 +25,10 @@ class BaseReportGenerator(ABC):
         self.result_dir_path = self._add_work_dir("result")
 
     def cleanup_working_directories(self):
-        shutil.rmtree(self.work_dir_path)
+        try:
+            shutil.rmtree(self.work_dir_path)
+        except Exception as e:
+            pass
 
     def _add_work_dir(self, folder_name: str) -> str:
         sanitized_folder_name = re.sub(r'[<>:"/\\|?*\.]', "_", folder_name)

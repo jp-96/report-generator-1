@@ -1,8 +1,6 @@
 # code/src/rptgen1/docx_report_generator.py
 
-import re
 from docxtpl import DocxTemplate
-import os
 from typing import BinaryIO
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult, render_file_basename
@@ -38,7 +36,9 @@ class DOCXReportGenerator(BaseReportGenerator):
             self.cleanup_working_directories()
             raise e
 
-    def render(self, context: dict = {}, image_mapping: dict = {}) -> ReportGeneratorResult:
+    def render(
+        self, context: dict = {}, image_mapping: dict = {}
+    ) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
             docx_result_file_path = self._join_path(

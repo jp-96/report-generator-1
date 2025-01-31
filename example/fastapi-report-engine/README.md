@@ -102,17 +102,16 @@ odt_request:
 ## docx - replace_picture_tpl.docx
 
 - template: `replace_picture_tpl.docx`
-- medias: `python.png`
+- medias: `python_logo.png`
 - docx_request:
 
 ```json
 
 {
     "context": {
-        "image":"writer.png"
+        "name":"python"
     },
-    "image_mapping": {"python_logo.png": "python.png"},
-    "file_basename": "rendered_{{image}}",
+    "file_basename": "rendered_{{name}}",
     "convert_to_pdf": true,
     "pdf_filter_options": {}
 }

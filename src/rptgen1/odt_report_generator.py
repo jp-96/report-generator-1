@@ -1,6 +1,5 @@
 # code/src/rptgen1/odt_report_generator.py
 
-import os
 from typing import BinaryIO
 from python_odt_template import ODTTemplate
 from python_odt_template.jinja import get_odt_renderer
