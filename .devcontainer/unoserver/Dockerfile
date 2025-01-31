@@ -4,24 +4,26 @@ FROM ghcr.io/unoconv/unoserver-docker
 # As root
 USER root
 
-# Install custom fonts
-ADD unoserver/customfonts /usr/local/customfonts
-WORKDIR /usr/local/customfonts
+ARG FONTS_FOLDER=/usr/share/fonts
+
+# Install custom fonts (copy font files)
+COPY unoserver/customfonts ${FONTS_FOLDER}/customfonts
+RUN fc-cache -vf
 
 # Install Japanese fonts
 # ###################################
 #   IPA FONT LICENSE AGREEMENT V1.0
 # https://moji.or.jp/ipafont/license/
 # ###################################
-RUN cd archiveipa \
-    # Install folder
-    && mkdir -p /usr/share/fonts/ipa \
+ADD unoserver/archiveipa /usr/local/archiveipa
+WORKDIR /usr/local/archiveipa
+RUN mkdir -p ${FONTS_FOLDER}/ipa \
 	# IPAmj Mincho Font
-    && unzip ipamjm00601.zip -d /usr/share/fonts/ipa/ipamjm0601 \
+    && unzip ipamjm00601.zip -d ${FONTS_FOLDER}/ipa/ipamjm0601 \
     # IPAex Font（2 fonts）
-    && unzip IPAexfont00401.zip -d /usr/share/fonts/ipa/ipaexfont00401 \
+    && unzip IPAexfont00401.zip -d ${FONTS_FOLDER}/ipa/ipaexfont00401 \
     # IPA Font（4 fonts）
-    && unzip IPAfont00303.zip -d /usr/share/fonts/ipa/ipafont00303 \
+    && unzip IPAfont00303.zip -d ${FONTS_FOLDER}/ipa/ipafont00303 \
     # Build font information cache files
     && fc-cache -vf
 
