@@ -18,24 +18,6 @@ class ODTReportGenerator(BaseReportGenerator):
     ):
         super().__init__(convert_to_pdf, pdf_filter_options, uno_client_config)
         self.file_basename = file_basename
-        self.template_dir_path = self._add_work_dir("template")
-        self.media_dir_path = self._add_work_dir("media")
-
-    def save_template_file(self, file: BinaryIO, filename: str):
-        try:
-            self.template_file_path = self._save_file(
-                file, filename, self.template_dir_path
-            )
-        except Exception as e:
-            self.cleanup_working_directories()
-            raise e
-
-    def save_media_file(self, file: BinaryIO, filename: str):
-        try:
-            self._save_file(file, filename, self.media_dir_path)
-        except Exception as e:
-            self.cleanup_working_directories()
-            raise e
 
     def render(self, context: dict) -> ReportGeneratorResult:
         try:
