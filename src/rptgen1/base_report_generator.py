@@ -14,10 +14,12 @@ from .report_generator_result import ReportGeneratorResult
 class BaseReportGenerator(ABC):
     def __init__(
         self,
+        file_basename: str,
         convert_to_pdf: bool,
         pdf_filter_options: dict,
         uno_client_config: UnoClientConfig,
     ):
+        self.file_basename = file_basename
         self.convert_to_pdf = convert_to_pdf
         self.pdf_filter_options = pdf_filter_options
         self.uno_client_config = uno_client_config

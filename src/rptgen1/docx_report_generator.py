@@ -15,8 +15,7 @@ class DOCXReportGenerator(BaseReportGenerator):
         pdf_filter_options: dict = {},
         uno_client_config: UnoClientConfig = UnoClientConfig(),
     ):
-        super().__init__(convert_to_pdf, pdf_filter_options, uno_client_config)
-        self.file_basename = file_basename
+        super().__init__(file_basename, convert_to_pdf, pdf_filter_options, uno_client_config)
 
     def render(
         self, context: dict = {}, image_mapping: dict = {}
