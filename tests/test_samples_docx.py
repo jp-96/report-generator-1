@@ -151,14 +151,13 @@ def test_order_tpl_docx_pdf(
 def test_replace_picture_docx(
     results_directory, replace_picture_tpl_docx_file_data, python_png_file_data
 ):
-    image_mapping = {"python_logo.png": "python.png"}
     generator = DOCXReportGenerator(
         file_basename="replace_picture",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
     generator.save_template_file(replace_picture_tpl_docx_file_data, "template.docx")
-    generator.save_media_file(python_png_file_data, "python.png")
-    result = generator.render(image_mapping=image_mapping)
+    generator.save_media_file(python_png_file_data, "python_logo.png")
+    result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert (
         result.mime_type
@@ -174,7 +173,6 @@ def test_replace_picture_docx(
 def test_replace_picture_docx_pdf(
     results_directory, replace_picture_tpl_docx_file_data, python_png_file_data
 ):
-    image_mapping = {"python_logo.png": "python.png"}
     generator = DOCXReportGenerator(
         file_basename="replace_picture",
         convert_to_pdf=True,
@@ -182,8 +180,8 @@ def test_replace_picture_docx_pdf(
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
     generator.save_template_file(replace_picture_tpl_docx_file_data, "template.docx")
-    generator.save_media_file(python_png_file_data, "python.png")
-    result = generator.render(image_mapping=image_mapping)
+    generator.save_media_file(python_png_file_data, "python_logo.png")
+    result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
     assert result.file_name.endswith(".pdf")

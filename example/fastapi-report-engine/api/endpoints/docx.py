@@ -26,11 +26,9 @@ def render(
     try:
         generator.save_template_file(template.file, template.filename)
         medias = medias or []
-        image_mapping = {}
         for f in medias:
-            image_mapping[f.filename] = f.filename
             generator.save_media_file(f.file, f.filename)
-        rendered = generator.render(request.context, image_mapping)
+        rendered = generator.render(request.context)
         return FileResponse(
             path=rendered.file_path,
             media_type=rendered.mime_type,

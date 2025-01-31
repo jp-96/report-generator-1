@@ -27,6 +27,7 @@ class BaseReportGenerator(ABC):
         self.result_dir_path = self._add_work_dir("result")
         self.template_dir_path = self._add_work_dir("template")
         self.media_dir_path = self._add_work_dir("media")
+        self.image_mapping = {} # DocxTemplate.replace_pic()
 
     def save_template_file(self, file: BinaryIO, filename: str):
         try:
@@ -39,7 +40,8 @@ class BaseReportGenerator(ABC):
 
     def save_media_file(self, file: BinaryIO, filename: str):
         try:
-            self._save_file(file, filename, self.media_dir_path)
+            file_path = self._save_file(file, filename, self.media_dir_path)
+            self.image_mapping[filename] = file_path
         except Exception as e:
             self.cleanup_working_directories()
             raise e

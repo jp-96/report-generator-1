@@ -15,20 +15,19 @@ class DOCXReportGenerator(BaseReportGenerator):
         pdf_filter_options: dict = {},
         uno_client_config: UnoClientConfig = UnoClientConfig(),
     ):
-        super().__init__(file_basename, convert_to_pdf, pdf_filter_options, uno_client_config)
+        super().__init__(
+            file_basename, convert_to_pdf, pdf_filter_options, uno_client_config
+        )
 
-    def render(
-        self, context: dict = {}, image_mapping: dict = {}
-    ) -> ReportGeneratorResult:
+    def render(self, context: dict = {}) -> ReportGeneratorResult:
         try:
             rendered_file_basename = render_file_basename(self.file_basename, context)
             docx_result_file_path = self._join_path(
                 self.result_dir_path, rendered_file_basename + ".docx"
             )
             tpl = DocxTemplate(self.template_file_path)
-            for embedded_file, dst_file in image_mapping.items():
-                dst_file_path = self._join_path(self.media_dir_path, dst_file)
-                tpl.replace_pic(embedded_file, dst_file_path)
+            for embedded_file, dst_file in self.image_mapping.items():
+                tpl.replace_pic(embedded_file, dst_file)
             tpl.render(context=context)
             tpl.save(docx_result_file_path)
 
