@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 import os
+from pathlib import Path
 import re
 import shutil
 import tempfile
@@ -40,22 +41,14 @@ class BaseReportGenerator(ABC):
         self.media_dir_path = self._add_work_dir("media")
         self.image_mapping = {}  # DocxTemplate.replace_pic()
 
-    def save_template_file(self, file: BinaryIO, filename: str):
-        try:
-            self.template_file_path = self._save_file(
-                file, filename, self.template_dir_path
-            )
-        except Exception as e:
-            self.cleanup_working_directories()
-            raise e
+    def save_template_file(self, file: BinaryIO | Path, filename: str):
+        self.template_file_path = self._save_file(
+            file, filename, self.template_dir_path
+        )
 
-    def save_media_file(self, file: BinaryIO, filename: str):
-        try:
-            file_path = self._save_file(file, filename, self.media_dir_path)
-            self.image_mapping[filename] = file_path
-        except Exception as e:
-            self.cleanup_working_directories()
-            raise e
+    def save_media_file(self, file: BinaryIO | Path, filename: str):
+        file_path = self._save_file(file, filename, self.media_dir_path)
+        self.image_mapping[filename] = file_path
 
     def cleanup_working_directories(self):
         try:
@@ -68,13 +61,16 @@ class BaseReportGenerator(ABC):
         os.makedirs(dir_path, exist_ok=True)
         return dir_path
 
-    def _save_file(self, file: BinaryIO, filename: str, dir_path: str) -> str:
-        file_path = os.path.join(dir_path, sanitize_filename(filename))
-        with open(file_path, "wb") as f:
-            f.write(file.read())
+    def _save_file(self, file: BinaryIO | Path, filename: str, dir_path: str) -> str:
+        file_path = Path(dir_path) / sanitize_filename(filename)
+        if isinstance(file, Path):
+            shutil.copyfile(file, file_path)
+        else:
+            with open(file_path, "wb") as f:
+                f.write(file.read())
         return file_path
 
-    def _convert_to_pdf(self, inpath: str) -> str:
+    def _convert_to_pdf(self, inpath: str) -> ReportGeneratorResult:
         filename = self.rendered_file_basename + ".pdf"
         mime_type = "application/pdf"
         file_path = os.path.join(self.result_dir_path, filename)
@@ -94,19 +90,12 @@ class BaseReportGenerator(ABC):
         return ReportGeneratorResult(file_path, mime_type, filename)
 
     def render(self, context: dict = {}) -> ReportGeneratorResult:
-        try:
-            self.rendered_file_basename = render_file_basename(
-                self.file_basename, context
-            )
-            generated = self._render(context)
-            if self.convert_to_pdf:
-                return self._convert_to_pdf(generated.file_path)
-            else:
-                return generated
-
-        except Exception as e:
-            self.cleanup_working_directories()
-            raise e
+        self.rendered_file_basename = render_file_basename(self.file_basename, context)
+        generated = self._render(context)
+        if self.convert_to_pdf:
+            return self._convert_to_pdf(generated.file_path)
+        else:
+            return generated
 
     @abstractmethod
     def _render(self, context: dict) -> ReportGeneratorResult:
