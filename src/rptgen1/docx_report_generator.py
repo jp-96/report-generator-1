@@ -30,4 +30,4 @@ class DOCXReportGenerator(BaseReportGenerator):
             tpl.replace_pic(embedded_file, dst_file)
         tpl.render(context=context)
         tpl.save(file_path)
-        return ReportGeneratorResult(file_path, mime_type, filename)
+        return ReportGeneratorResult(filename, mime_type, file_path)

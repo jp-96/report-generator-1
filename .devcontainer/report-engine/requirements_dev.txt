@@ -5,6 +5,9 @@ pydantic-settings
 uvicorn
 pytest
 pytest-cov
-python_odt_template[standard]
+# python_odt_template[standard]
+defusedxml
+jinja2
+markdown2
 docxtpl
 unoserver

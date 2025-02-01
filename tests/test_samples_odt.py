@@ -2,6 +2,7 @@
 
 import datetime
 from io import BytesIO
+from pathlib import Path
 import shutil
 import pytest
 import os
@@ -87,16 +88,24 @@ def simple_template_odt_context(currnet_datetime, readme_md_file_text):
 
 
 @pytest.fixture
-def template_odt_file_data(inputs_directory):
-    file_path = os.path.join(inputs_directory, "template.odt")
-    with open(file_path, "rb") as file:
+def template_odt_file_path(inputs_directory):
+    return Path(inputs_directory).joinpath("template.odt")
+
+
+@pytest.fixture
+def template_odt_file_data(template_odt_file_path):
+    with open(template_odt_file_path, "rb") as file:
         return BytesIO(file.read())
 
 
 @pytest.fixture
-def writer_png_file_data(inputs_directory):
-    file_path = os.path.join(inputs_directory, "writer.png")
-    with open(file_path, "rb") as file:
+def writer_png_file_path(inputs_directory):
+    return Path(inputs_directory).joinpath("writer.png")
+
+
+@pytest.fixture
+def writer_png_file_data(writer_png_file_path):
+    with open(writer_png_file_path, "rb") as file:
         return BytesIO(file.read())
 
 
@@ -150,7 +159,7 @@ def test_simple_template_odt_to_pdf(
 def test_template_odt(
     results_directory,
     template_odt_context,
-    template_odt_file_data,
+    template_odt_file_path,
     writer_png_file_data,
 ):
     generator = create_report_generator(
@@ -159,7 +168,7 @@ def test_template_odt(
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
     assert isinstance(generator, ODTReportGenerator)
-    generator.save_template_file(template_odt_file_data, "template.odt")
+    generator.save_template_file(template_odt_file_path, "template.odt")
     generator.save_media_file(writer_png_file_data, "writer.png")
     result = generator.render(template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
@@ -175,7 +184,7 @@ def test_template_odt_to_pdf(
     results_directory,
     template_odt_context,
     template_odt_file_data,
-    writer_png_file_data,
+    writer_png_file_path,
 ):
     generator = create_report_generator(
         type="odt",
@@ -186,7 +195,7 @@ def test_template_odt_to_pdf(
     )
     assert isinstance(generator, ODTReportGenerator)
     generator.save_template_file(template_odt_file_data, "template.odt")
-    generator.save_media_file(writer_png_file_data, "writer.png")
+    generator.save_media_file(writer_png_file_path, "writer.png")
     result = generator.render(template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
