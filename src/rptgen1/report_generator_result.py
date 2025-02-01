@@ -4,6 +4,6 @@ from typing import NamedTuple
 
 
 class ReportGeneratorResult(NamedTuple):
-    file_path: str
-    mime_type: str
     filename: str
+    mime_type: str
+    file_path: str

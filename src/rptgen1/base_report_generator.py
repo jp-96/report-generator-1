@@ -8,6 +8,7 @@ import shutil
 import tempfile
 from typing import BinaryIO
 from jinja2 import Template
+from python_odt_template import libreoffice
 from unoserver import client
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult
@@ -74,20 +75,27 @@ class BaseReportGenerator(ABC):
         filename = self.rendered_file_basename + ".pdf"
         mime_type = "application/pdf"
         file_path = os.path.join(self.result_dir_path, filename)
-        filter_options = [f"{k}={v}" for k, v in self.pdf_filter_options.items()]
-        convert_command = {
-            "inpath": inpath,
-            "outpath": file_path,
-            "convert_to": "pdf",
-            "filtername": "writer_pdf_Export",
-            "filter_options": filter_options,
-        }
-        client.UnoClient(
-            self.uno_client_config.server,
-            self.uno_client_config.port,
-            self.uno_client_config.host_location,
-        ).convert(**convert_command)
-        return ReportGeneratorResult(file_path, mime_type, filename)
+        host_location = self.uno_client_config.host_location
+        if self.uno_client_config.host_location=="auto":
+            if not self.uno_client_config.server:
+                host_location = "process"
+        if host_location=="process":
+            libreoffice.convert(inpath, self.result_dir_path)
+        else:
+            filter_options = [f"{k}={v}" for k, v in self.pdf_filter_options.items()]
+            convert_command = {
+                "inpath": inpath,
+                "outpath": file_path,
+                "convert_to": "pdf",
+                "filtername": "writer_pdf_Export",
+                "filter_options": filter_options,
+            }
+            client.UnoClient(
+                self.uno_client_config.server,
+                self.uno_client_config.port,
+                self.uno_client_config.host_location,
+            ).convert(**convert_command)
+        return ReportGeneratorResult(filename, mime_type, file_path)
 
     def render(self, context: dict = {}) -> ReportGeneratorResult:
         self.rendered_file_basename = render_file_basename(self.file_basename, context)
