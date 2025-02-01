@@ -6,8 +6,6 @@ uvicorn
 pytest
 pytest-cov
 # python_odt_template[standard]
-defusedxml
-jinja2
-markdown2
+# git+https://github.com/jp-96/python-odt-template.git@pathguard[standard]
 docxtpl
 unoserver
