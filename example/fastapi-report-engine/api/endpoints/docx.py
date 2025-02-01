@@ -3,7 +3,7 @@
 from fastapi import APIRouter, File, UploadFile
 from typing import List, Optional
 from api.models.render_request import RenderRequest
-from report_engine import generate_report
+from services.report_engine import generate_report
 
 router = APIRouter()
 
@@ -14,5 +14,4 @@ def render(
     template: UploadFile,
     medias: Optional[List[UploadFile]] = File(None),
 ):
-    response = generate_report("docx", request, template, medias)
-    return response
+    return generate_report("docx", request, template, medias)
