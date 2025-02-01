@@ -174,3 +174,8 @@ cython_debug/
 results/
 /tests/samples/docx/tests/output
 /tests/samples/odt/outputs
+
+# unoserver - custom fonts
+!/.devcontainer/unoserver/customfonts
+/.devcontainer/unoserver/customfonts/*
+!/.devcontainer/unoserver/customfonts/.gitkeep

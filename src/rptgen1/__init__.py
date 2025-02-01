@@ -3,11 +3,11 @@
 from .uno_client_config import UnoClientConfig
 from .docx_report_generator import DOCXReportGenerator
 from .odt_report_generator import ODTReportGenerator
-from .report_generator_result import ReportGeneratorResult
+from .report_generator import create_report_generator
 
 __all__ = [
     "UnoClientConfig",
-    "ReportGeneratorResult",
     "ODTReportGenerator",
     "DOCXReportGenerator",
+    "create_report_generator",
 ]
