@@ -6,6 +6,7 @@ import shutil
 import pytest
 import os
 from rptgen1.odt_report_generator import ODTReportGenerator
+from rptgen1.report_generator import create_report_generator
 from rptgen1.report_generator_result import ReportGeneratorResult
 from rptgen1.uno_client_config import UnoClientConfig
 
@@ -107,10 +108,12 @@ def template_odt_context():
 def test_simple_template_odt(
     results_directory, simple_template_odt_context, simple_template_odt_file_data
 ):
-    generator = ODTReportGenerator(
+    generator = create_report_generator(
+        type="odt",
         file_basename="simple_{{document.datetime}}",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, ODTReportGenerator)
     generator.save_template_file(simple_template_odt_file_data, "template.odt")
     result = generator.render(simple_template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
@@ -125,12 +128,14 @@ def test_simple_template_odt(
 def test_simple_template_odt_to_pdf(
     results_directory, simple_template_odt_context, simple_template_odt_file_data
 ):
-    generator = ODTReportGenerator(
+    generator = create_report_generator(
+        type="odt",
         file_basename="simple_{{document.datetime}}",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, ODTReportGenerator)
     generator.save_template_file(simple_template_odt_file_data, "template.odt")
     result = generator.render(simple_template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
@@ -148,10 +153,12 @@ def test_template_odt(
     template_odt_file_data,
     writer_png_file_data,
 ):
-    generator = ODTReportGenerator(
+    generator = create_report_generator(
+        type="odt",
         file_basename="rendered_{{image}}",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, ODTReportGenerator)
     generator.save_template_file(template_odt_file_data, "template.odt")
     generator.save_media_file(writer_png_file_data, "writer.png")
     result = generator.render(template_odt_context)
@@ -170,12 +177,14 @@ def test_template_odt_to_pdf(
     template_odt_file_data,
     writer_png_file_data,
 ):
-    generator = ODTReportGenerator(
+    generator = create_report_generator(
+        type="odt",
         file_basename="rendered_{{image}}",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, ODTReportGenerator)
     generator.save_template_file(template_odt_file_data, "template.odt")
     generator.save_media_file(writer_png_file_data, "writer.png")
     result = generator.render(template_odt_context)

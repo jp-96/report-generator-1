@@ -11,9 +11,9 @@ class DOCXReportGenerator(BaseReportGenerator):
     def __init__(
         self,
         file_basename: str,
-        convert_to_pdf: bool = False,
-        pdf_filter_options: dict = {},
-        uno_client_config: UnoClientConfig = UnoClientConfig(),
+        convert_to_pdf: bool,
+        pdf_filter_options: dict,
+        uno_client_config: UnoClientConfig,
     ):
         super().__init__(
             file_basename, convert_to_pdf, pdf_filter_options, uno_client_config
