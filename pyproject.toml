@@ -7,6 +7,9 @@ build-backend = "hatchling.build"
 [tool.hatch.version]
 path = "src/rptgen1/__about__.py"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [project]
 name = "rptgen1"
 dynamic = ["version"]
