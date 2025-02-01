@@ -3,6 +3,7 @@ import os
 import shutil
 import pytest
 from rptgen1.docx_report_generator import DOCXReportGenerator
+from rptgen1.report_generator import create_report_generator
 from rptgen1.report_generator_result import ReportGeneratorResult
 from rptgen1.uno_client_config import UnoClientConfig
 
@@ -71,10 +72,12 @@ def order_tpl_docx_context():
 
 
 def test_comments_tpl_docx(results_directory, comments_tpl_docx_file_data):
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="comments",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(comments_tpl_docx_file_data, "template.docx")
     result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
@@ -82,7 +85,7 @@ def test_comments_tpl_docx(results_directory, comments_tpl_docx_file_data):
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -90,17 +93,19 @@ def test_comments_tpl_docx(results_directory, comments_tpl_docx_file_data):
 
 
 def test_comments_tpl_docx_pdf(results_directory, comments_tpl_docx_file_data):
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="comments",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(comments_tpl_docx_file_data, "template.docx")
     result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -110,10 +115,12 @@ def test_comments_tpl_docx_pdf(results_directory, comments_tpl_docx_file_data):
 def test_order_tpl_docx(
     results_directory, order_tpl_docx_file_data, order_tpl_docx_context
 ):
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="order",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(order_tpl_docx_file_data, "template.docx")
     result = generator.render(order_tpl_docx_context)
     assert isinstance(result, ReportGeneratorResult)
@@ -121,7 +128,7 @@ def test_order_tpl_docx(
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -131,17 +138,19 @@ def test_order_tpl_docx(
 def test_order_tpl_docx_pdf(
     results_directory, order_tpl_docx_file_data, order_tpl_docx_context
 ):
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="order",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(order_tpl_docx_file_data, "template.docx")
     result = generator.render(order_tpl_docx_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -151,20 +160,21 @@ def test_order_tpl_docx_pdf(
 def test_replace_picture_docx(
     results_directory, replace_picture_tpl_docx_file_data, python_png_file_data
 ):
-    image_mapping = {"python_logo.png": "python.png"}
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="replace_picture",
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(replace_picture_tpl_docx_file_data, "template.docx")
-    generator.save_media_file(python_png_file_data, "python.png")
-    result = generator.render(image_mapping=image_mapping)
+    generator.save_media_file(python_png_file_data, "python_logo.png")
+    result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert (
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -174,19 +184,20 @@ def test_replace_picture_docx(
 def test_replace_picture_docx_pdf(
     results_directory, replace_picture_tpl_docx_file_data, python_png_file_data
 ):
-    image_mapping = {"python_logo.png": "python.png"}
-    generator = DOCXReportGenerator(
+    generator = create_report_generator(
+        type="docx",
         file_basename="replace_picture",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server="unoserver"),
     )
+    assert isinstance(generator, DOCXReportGenerator)
     generator.save_template_file(replace_picture_tpl_docx_file_data, "template.docx")
-    generator.save_media_file(python_png_file_data, "python.png")
-    result = generator.render(image_mapping=image_mapping)
+    generator.save_media_file(python_png_file_data, "python_logo.png")
+    result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
