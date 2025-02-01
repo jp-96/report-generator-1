@@ -32,7 +32,7 @@ def render(
         return FileResponse(
             path=rendered.file_path,
             media_type=rendered.mime_type,
-            filename=rendered.file_name,
+            filename=rendered.filename,
             background=BackgroundTask(generator.cleanup_working_directories),
         )
     except Exception as e:

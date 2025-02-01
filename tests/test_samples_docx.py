@@ -82,7 +82,7 @@ def test_comments_tpl_docx(results_directory, comments_tpl_docx_file_data):
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -100,7 +100,7 @@ def test_comments_tpl_docx_pdf(results_directory, comments_tpl_docx_file_data):
     result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -121,7 +121,7 @@ def test_order_tpl_docx(
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -141,7 +141,7 @@ def test_order_tpl_docx_pdf(
     result = generator.render(order_tpl_docx_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -163,7 +163,7 @@ def test_replace_picture_docx(
         result.mime_type
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-    assert result.file_name.endswith(".docx")
+    assert result.filename.endswith(".docx")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -184,7 +184,7 @@ def test_replace_picture_docx_pdf(
     result = generator.render()
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()

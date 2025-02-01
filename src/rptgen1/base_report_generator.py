@@ -6,9 +6,19 @@ import re
 import shutil
 import tempfile
 from typing import BinaryIO
+from jinja2 import Template
 from unoserver import client
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult
+
+
+def sanitize_filename(filename: str) -> str:
+    return re.sub(r'[<>:"/\\|?*\r\n\t]', "_", filename)
+
+
+def render_file_basename(file_basename: str, context: dict) -> str:
+    filename = Template(file_basename).render(context)
+    return sanitize_filename(filename)
 
 
 class BaseReportGenerator(ABC):
@@ -20,6 +30,7 @@ class BaseReportGenerator(ABC):
         uno_client_config: UnoClientConfig,
     ):
         self.file_basename = file_basename
+        self.rendered_file_basename = None
         self.convert_to_pdf = convert_to_pdf
         self.pdf_filter_options = pdf_filter_options
         self.uno_client_config = uno_client_config
@@ -27,7 +38,7 @@ class BaseReportGenerator(ABC):
         self.result_dir_path = self._add_work_dir("result")
         self.template_dir_path = self._add_work_dir("template")
         self.media_dir_path = self._add_work_dir("media")
-        self.image_mapping = {} # DocxTemplate.replace_pic()
+        self.image_mapping = {}  # DocxTemplate.replace_pic()
 
     def save_template_file(self, file: BinaryIO, filename: str):
         try:
@@ -52,33 +63,27 @@ class BaseReportGenerator(ABC):
         except Exception as e:
             pass
 
-    def _add_work_dir(self, folder_name: str) -> str:
-        sanitized_folder_name = re.sub(r'[<>:"/\\|?*\.]', "_", folder_name)
-        dir_path = os.path.join(self.work_dir_path, sanitized_folder_name)
+    def _add_work_dir(self, name: str) -> str:
+        dir_path = os.path.join(self.work_dir_path, name)
         os.makedirs(dir_path, exist_ok=True)
         return dir_path
 
-    def _join_path(self, dir_path: str, filename: str) -> str:
-        file_path = os.path.join(dir_path, filename)
-        return file_path
-
     def _save_file(self, file: BinaryIO, filename: str, dir_path: str) -> str:
-        file_path = self._join_path(dir_path, filename)
+        file_path = os.path.join(dir_path, sanitize_filename(filename))
         with open(file_path, "wb") as f:
             f.write(file.read())
         return file_path
 
-    def _convert_to_pdf(self, inpath: str, file_basename: str) -> str:
-        pdf_result_file_path = os.path.join(
-            self.result_dir_path, file_basename + ".pdf"
-        )
+    def _convert_to_pdf(self, inpath: str) -> str:
+        filename = self.rendered_file_basename + ".pdf"
+        mime_type = "application/pdf"
+        file_path = os.path.join(self.result_dir_path, filename)
         filter_options = [f"{k}={v}" for k, v in self.pdf_filter_options.items()]
-        filtername = "writer_pdf_Export" if filter_options else None
         convert_command = {
             "inpath": inpath,
-            "outpath": pdf_result_file_path,
+            "outpath": file_path,
             "convert_to": "pdf",
-            "filtername": filtername,
+            "filtername": "writer_pdf_Export",
             "filter_options": filter_options,
         }
         client.UnoClient(
@@ -86,8 +91,23 @@ class BaseReportGenerator(ABC):
             self.uno_client_config.port,
             self.uno_client_config.host_location,
         ).convert(**convert_command)
-        return pdf_result_file_path
+        return ReportGeneratorResult(file_path, mime_type, filename)
+
+    def render(self, context: dict = {}) -> ReportGeneratorResult:
+        try:
+            self.rendered_file_basename = render_file_basename(
+                self.file_basename, context
+            )
+            generated = self._render(context)
+            if self.convert_to_pdf:
+                return self._convert_to_pdf(generated.file_path)
+            else:
+                return generated
+
+        except Exception as e:
+            self.cleanup_working_directories()
+            raise e
 
     @abstractmethod
-    def render(self, context: dict) -> ReportGeneratorResult:
+    def _render(self, context: dict) -> ReportGeneratorResult:
         pass

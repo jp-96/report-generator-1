@@ -115,7 +115,7 @@ def test_simple_template_odt(
     result = generator.render(simple_template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/vnd.oasis.opendocument.text"
-    assert result.file_name.endswith(".odt")
+    assert result.filename.endswith(".odt")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -135,7 +135,7 @@ def test_simple_template_odt_to_pdf(
     result = generator.render(simple_template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -157,7 +157,7 @@ def test_template_odt(
     result = generator.render(template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/vnd.oasis.opendocument.text"
-    assert result.file_name.endswith(".odt")
+    assert result.filename.endswith(".odt")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()
@@ -181,7 +181,7 @@ def test_template_odt_to_pdf(
     result = generator.render(template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.file_name.endswith(".pdf")
+    assert result.filename.endswith(".pdf")
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, results_directory)
     generator.cleanup_working_directories()

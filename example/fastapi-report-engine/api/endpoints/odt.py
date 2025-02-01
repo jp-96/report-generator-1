@@ -37,7 +37,7 @@ def render(
                 if request.convert_to_pdf
                 else "application/octet-stream"
             ),
-            filename=rendered.file_name,
+            filename=rendered.filename,
             background=BackgroundTask(generator.cleanup_working_directories),
         )
     except Exception as e:
