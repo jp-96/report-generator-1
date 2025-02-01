@@ -10,7 +10,7 @@ ARG FONTS_FOLDER=/usr/share/fonts
 COPY unoserver/customfonts ${FONTS_FOLDER}/customfonts
 RUN fc-cache -vf
 
-# Install Japanese fonts
+# Install Japanese fonts - IPA FONT
 # ###################################
 #   IPA FONT LICENSE AGREEMENT V1.0
 # https://moji.or.jp/ipafont/license/
