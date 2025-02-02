@@ -6,7 +6,7 @@ from python_odt_template.jinja import get_odt_renderer
 from python_odt_template.libreoffice import libreoffice
 from python_odt_template.libreoffice import unoconvert
 
-odt_renderer = get_odt_renderer(media_path="inputs")
+odt_renderer = get_odt_renderer(media_path=Path("inputs").resolve())
 outputs_dir = Path("outputs")
 outputs_dir.mkdir(exist_ok=True)
 
