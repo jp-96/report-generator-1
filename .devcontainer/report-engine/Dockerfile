@@ -40,5 +40,6 @@ RUN mkdir /home/vscode/.vscode-server \
 
 # [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
 COPY ./report-engine/requirements_dev.txt /tmp/pip-tmp/
+RUN pip3 install --upgrade pip
 RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements_dev.txt \
    && rm -rf /tmp/pip-tmp
