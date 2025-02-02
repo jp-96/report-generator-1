@@ -6,11 +6,13 @@ USER root
 
 ARG FONTS_FOLDER=/usr/share/fonts
 
-# Install custom fonts (copy font files)
+# [Custom Font] Install custom fonts (copy font files)
+# Place font files in the `./unoserver/customfonts` folder
+# to ensure they are installed during the build process.
 COPY unoserver/customfonts ${FONTS_FOLDER}/customfonts
 RUN fc-cache -vf
 
-# Install Japanese fonts - IPA FONT
+# [IPA Font] Install Japanese fonts
 # ###################################
 #   IPA FONT LICENSE AGREEMENT V1.0
 # https://moji.or.jp/ipafont/license/
