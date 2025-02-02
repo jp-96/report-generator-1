@@ -9,19 +9,18 @@ from api.models.render_request import RenderRequest
 from config import get_uno_client_config
 
 
-def _validate_mime_type(mime_type: str):
-    if mime_type == "application/vnd.oasis.opendocument.text":
-        # Set media_type to 'application/octet-stream' to ensure the file is downloaded as binary data.
-        mime_type = "application/octet-stream"
-    return mime_type
-
-
 def generate_report(
     type: str,
     request: RenderRequest,
     template: UploadFile,
     medias: Optional[List[UploadFile]],
 ):
+
+    def validate_mime_type(mime_type: str):
+        if mime_type == "application/vnd.oasis.opendocument.text":
+            # Set media_type to 'application/octet-stream' to ensure the file is downloaded as binary data.
+            mime_type = "application/octet-stream"
+        return mime_type
 
     generator = create_report_generator(
         type=type,
@@ -38,7 +37,7 @@ def generate_report(
         rendered = generator.render(request.context)
         return FileResponse(
             path=rendered.file_path,
-            media_type=_validate_mime_type(rendered.mime_type),
+            media_type=validate_mime_type(rendered.mime_type),
             filename=rendered.filename,
             background=BackgroundTask(generator.cleanup_working_directories),
         )

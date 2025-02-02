@@ -6,18 +6,24 @@ USER root
 
 ARG FONTS_FOLDER=/usr/share/fonts
 
-# Install custom fonts (copy font files)
+# [Custom Font] Install custom fonts (copy font files)
+# Place font files in the `./unoserver/customfonts` folder
+# to ensure they are installed during the build process.
 COPY unoserver/customfonts ${FONTS_FOLDER}/customfonts
 RUN fc-cache -vf
 
-# Install Japanese fonts
+# [IPA Font] Install Japanese fonts
 # ###################################
 #   IPA FONT LICENSE AGREEMENT V1.0
 # https://moji.or.jp/ipafont/license/
 # ###################################
-ADD unoserver/archiveipa /usr/local/archiveipa
-WORKDIR /usr/local/archiveipa
-RUN mkdir -p ${FONTS_FOLDER}/ipa \
+COPY unoserver/ipafonts /usr/local/ipafonts
+WORKDIR /usr/local/ipafonts
+RUN apk --no-cache add wget \
+    # Download ipa fonts
+    && wget -i urls.txt \
+    # Installed fonts folder
+    && mkdir -p ${FONTS_FOLDER}/ipa \
 	# IPAmj Mincho Font
     && unzip ipamjm00601.zip -d ${FONTS_FOLDER}/ipa/ipamjm0601 \
     # IPAex Font（2 fonts）
@@ -29,3 +35,4 @@ RUN mkdir -p ${FONTS_FOLDER}/ipa \
 
 # As worker
 USER ${UID}
+WORKDIR ${HOME}

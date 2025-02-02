@@ -27,4 +27,4 @@ class ODTReportGenerator(BaseReportGenerator):
         with ODTTemplate(self.template_file_path) as tpl:
             get_odt_renderer(self.media_dir_path).render(tpl, context)
             tpl.pack(file_path)
-        return ReportGeneratorResult(file_path, mime_type, filename)
+        return ReportGeneratorResult(filename, mime_type, file_path)
