@@ -5,6 +5,7 @@ pydantic-settings
 uvicorn
 pytest
 pytest-cov
+httpx
 # python_odt_template[standard]
 git+https://github.com/jp-96/python-odt-template.git@pathguard#egg=python_odt_template[standard]
 docxtpl
