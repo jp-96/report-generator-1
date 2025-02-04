@@ -8,10 +8,10 @@ import shutil
 import tempfile
 from typing import BinaryIO
 from jinja2 import Template
-from python_odt_template import libreoffice
 from unoserver import client
 from .uno_client_config import UnoClientConfig
 from .report_generator_result import ReportGeneratorResult
+from .loconvert import loconvert
 
 
 def sanitize_filename(filename: str) -> str:
@@ -76,11 +76,11 @@ class BaseReportGenerator(ABC):
         mime_type = "application/pdf"
         file_path = os.path.join(self.result_dir_path, filename)
         host_location = self.uno_client_config.host_location
-        if self.uno_client_config.host_location=="auto":
+        if self.uno_client_config.host_location == "auto":
             if not self.uno_client_config.server:
                 host_location = "process"
-        if host_location=="process":
-            libreoffice.convert(inpath, self.result_dir_path)
+        if host_location == "process":
+            loconvert(inpath, self.result_dir_path)
         else:
             filter_options = [f"{k}={v}" for k, v in self.pdf_filter_options.items()]
             convert_command = {
