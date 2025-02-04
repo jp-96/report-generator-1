@@ -2,11 +2,37 @@ import datetime
 import json
 import os
 from pathlib import Path
-from fastapi import FastAPI
+
+import urllib
+import urllib.parse
 from fastapi.testclient import TestClient
 import pytest
 
 from main import app
+
+
+def extract_filename_from_response(response):
+    content_disposition = response.headers.get("Content-Disposition")
+    if content_disposition:
+        if "filename*=utf-8''" in content_disposition:
+            filename = content_disposition.split("filename*=utf-8''")[-1]
+            filename = urllib.parse.unquote(filename)
+            return filename
+        elif "filename=" in content_disposition:
+            filename = content_disposition.split("filename=")[-1].strip('"')
+            return filename
+        else:
+            return None
+    else:
+        return None
+
+
+@pytest.fixture
+def currnet_datetime():
+    td = datetime.timedelta(hours=9)
+    tz = datetime.timezone(td, "JST")
+    dt = datetime.datetime.now(tz)
+    return str(dt)
 
 
 @pytest.fixture
@@ -31,14 +57,6 @@ def odt_directory(current_directory):
 def simple_template_odt_file_reader(odt_directory):
     file_path = Path(odt_directory).joinpath("simple_template.odt")
     return open(file_path, "rb")
-
-
-@pytest.fixture
-def currnet_datetime():
-    td = datetime.timedelta(hours=9)
-    tz = datetime.timezone(td, "JST")
-    dt = datetime.datetime.now(tz)
-    return str(dt)
 
 
 @pytest.fixture
@@ -132,7 +150,7 @@ def test_komainu_post_simple_template_odt(
                 },
             ],
         },
-        "file_basename": "rendered",
+        "file_basename": "komainu_odt_simple_template_{{document.datetime}}",
         "convert_to_pdf": convert_to_pdf,
         "pdf_filter_options": {},
     }
@@ -151,11 +169,10 @@ def test_komainu_post_simple_template_odt(
 
     if convert_to_pdf:
         assert b"%PDF" in response.content
-        result_filename = os.path.join(results_directory, "komainu_simple_template.pdf")
     else:
         assert b"application/vnd.oasis.opendocument.text" in response.content
-        result_filename = os.path.join(results_directory, "komainu_simple_template.odt")
 
+    result_filename = extract_filename_from_response(response)
     with open(os.path.join(results_directory, result_filename), "wb") as f:
         f.write(response.content)
 
@@ -171,7 +188,7 @@ def test_komainu_post_template_odt(
 
     request_data = {
         "context": {"image": "writer.png"},
-        "file_basename": "rendered",
+        "file_basename": "komainu_odt_template",
         "convert_to_pdf": convert_to_pdf,
         "pdf_filter_options": {},
     }
@@ -202,11 +219,14 @@ def test_komainu_post_template_odt(
 
     if convert_to_pdf:
         assert b"%PDF" in response.content
-        result_filename = os.path.join(results_directory, "komainu_template.pdf")
     else:
         assert b"application/vnd.oasis.opendocument.text" in response.content
-        result_filename = os.path.join(results_directory, "komainu_template.odt")
 
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_odt_template.pdf"
+    else:
+        assert result_filename == "komainu_odt_template.odt"
     with open(os.path.join(results_directory, result_filename), "wb") as f:
         f.write(response.content)
 
@@ -229,7 +249,7 @@ def test_komainu_post_order_tpl_docx(
             "company_name": "The World Wide company",
             "total_price": "100,000,000.00",
         },
-        "file_basename": "rendered_{{customer_name}}",
+        "file_basename": "komainu_docx_order_{{customer_name}}",
         "convert_to_pdf": convert_to_pdf,
         "pdf_filter_options": {},
     }
@@ -251,11 +271,14 @@ def test_komainu_post_order_tpl_docx(
 
     if convert_to_pdf:
         assert b"%PDF" in response.content
-        result_filename = os.path.join(results_directory, "komainu_order_tpl.pdf")
     else:
         assert b"word/document.xml" in response.content
-        result_filename = os.path.join(results_directory, "komainu_order_tpl.docx")
 
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_docx_order_Eric.pdf"
+    else:
+        assert result_filename == "komainu_docx_order_Eric.docx"
     with open(os.path.join(results_directory, result_filename), "wb") as f:
         f.write(response.content)
 
@@ -270,7 +293,7 @@ def test_komainu_post_replace_picture_tpl_docx(
 
     request_data = {
         "context": {"name": "python"},
-        "file_basename": "rendered_{{name}}",
+        "file_basename": "komainu_docx_replace_picture_{{name}}",
         "convert_to_pdf": convert_to_pdf,
         "pdf_filter_options": {},
     }
@@ -291,14 +314,13 @@ def test_komainu_post_replace_picture_tpl_docx(
 
     if convert_to_pdf:
         assert b"%PDF" in response.content
-        result_filename = os.path.join(
-            results_directory, "komainu_replace_picture_tpl.pdf"
-        )
     else:
         assert b"word/document.xml" in response.content
-        result_filename = os.path.join(
-            results_directory, "komainu_replace_picture_tpl.docx"
-        )
 
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_docx_replace_picture_python.pdf"
+    else:
+        assert result_filename == "komainu_docx_replace_picture_python.docx"
     with open(os.path.join(results_directory, result_filename), "wb") as f:
         f.write(response.content)
