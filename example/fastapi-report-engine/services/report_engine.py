@@ -10,20 +10,31 @@ from config import get_uno_client_config
 
 
 def generate_report(
-    type: str,
     request: RenderRequest,
     template: UploadFile,
     medias: Optional[List[UploadFile]],
+    type: str = "auto",  # "auto", "docx", "odt"
 ):
 
-    def validate_mime_type(mime_type: str):
+    def validate_mime_type(mime_type: str, is_disabled: bool = False):
+        if is_disabled:
+            return mime_type
         if mime_type == "application/vnd.oasis.opendocument.text":
             # Set media_type to 'application/octet-stream' to ensure the file is downloaded as binary data.
             mime_type = "application/octet-stream"
         return mime_type
 
+    def get_type():
+        ret = type
+        if type == "auto":
+            if template.filename.endswith(".docx"):
+                ret = "docx"
+            elif template.filename.endswith(".odt"):
+                ret = "odt"
+        return ret
+
     generator = create_report_generator(
-        type=type,
+        type=get_type(),
         file_basename=request.file_basename,
         convert_to_pdf=request.convert_to_pdf,
         pdf_filter_options=request.pdf_filter_options,

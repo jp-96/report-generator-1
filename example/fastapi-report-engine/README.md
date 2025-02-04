@@ -7,14 +7,15 @@ python main.py
 
 http://localhost/docs or http://localhost:8002/docs
 
-samples: `./code/tests/samples/odt/inputs`, `./code/tests/samples/docx/tests/templates`
+samples:
+- `./code/example/fastapi-report-engine/tests/samples/odt`
+- `./code/example/fastapi-report-engine/tests/samples/docx`
 
 ## odt - simple_template.odt
 
-template: `simple_template.odt`
-medias: (unckecked: `Send empty value`)
-
-odt_request:
+- template: `simple_template.odt`
+- medias: (unckecked: `Send empty value`)
+- request:
 
 ```json
 
@@ -56,7 +57,7 @@ odt_request:
 
 - template: `template.odt`
 - medias: `writer.png`
-- odt_request:
+- request:
 
 ```json
 
@@ -75,7 +76,7 @@ odt_request:
 
 - template: `order_tpl.docx`
 - medias: (unckecked: `Send empty value`)
-- docx_request:
+- request:
 
 ```json
 
@@ -94,7 +95,7 @@ odt_request:
     },
     "file_basename": "rendered_{{customer_name}}",
     "convert_to_pdf": true,
-    "pdf_filter_options": {}
+    "pdf_filter_options": {"TiledWatermark": "draft"}
 }
 
 ```
@@ -103,7 +104,7 @@ odt_request:
 
 - template: `replace_picture_tpl.docx`
 - medias: `python_logo.png`
-- docx_request:
+- request:
 
 ```json
 
