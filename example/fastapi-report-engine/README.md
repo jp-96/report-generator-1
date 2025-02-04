@@ -95,7 +95,7 @@ samples:
     },
     "file_basename": "rendered_{{customer_name}}",
     "convert_to_pdf": true,
-    "pdf_filter_options": {}
+    "pdf_filter_options": {"TiledWatermark": "draft"}
 }
 
 ```

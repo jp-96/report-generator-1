@@ -214,6 +214,32 @@ def test_templates(
     assert not os.path.exists(result.file_path)
 
 
+def test_template_watermark(
+    results_directory,
+    template_odt_context,
+    template_odt_file_path,
+    writer_png_file_path,
+):
+    generator = create_report_generator(
+        type="odt",
+        file_basename="pdf_template_watermark",
+        convert_to_pdf=True,
+        pdf_filter_options={"TiledWatermark": "draft"},
+        uno_client_config=UnoClientConfig(server="unoserver"),
+    )
+    assert isinstance(generator, ODTReportGenerator)
+    generator.save_template_file(template_odt_file_path, "template.odt")
+    generator.save_media_file(writer_png_file_path, "writer.png")
+    result = generator.render(template_odt_context)
+    assert isinstance(result, ReportGeneratorResult)
+    assert result.mime_type == "application/pdf"
+    assert result.filename == "pdf_template_watermark.pdf"
+    assert os.path.exists(result.file_path)
+    shutil.copy2(result.file_path, os.path.join(results_directory, result.filename))
+    generator.cleanup_working_directories()
+    assert not os.path.exists(result.file_path)
+
+
 def test_template_proc(
     results_directory,
     template_odt_context,
@@ -222,7 +248,7 @@ def test_template_proc(
 ):
     generator = create_report_generator(
         type="odt",
-        file_basename="proc_odt2pdf",
+        file_basename="pdf_template_proc_odt2pdf",
         convert_to_pdf=True,
         pdf_filter_options={},
         uno_client_config=UnoClientConfig(server=""),
@@ -233,7 +259,7 @@ def test_template_proc(
     result = generator.render(template_odt_context)
     assert isinstance(result, ReportGeneratorResult)
     assert result.mime_type == "application/pdf"
-    assert result.filename == "proc_odt2pdf.pdf"
+    assert result.filename == "pdf_template_proc_odt2pdf.pdf"
     assert os.path.exists(result.file_path)
     shutil.copy2(result.file_path, os.path.join(results_directory, result.filename))
     generator.cleanup_working_directories()

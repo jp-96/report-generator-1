@@ -16,8 +16,4 @@ def render(
 ):
     if not medias:
         medias = []
-    return generate_report(
-        request,
-        template,
-        medias
-    )
+    return generate_report(request, template, medias)
