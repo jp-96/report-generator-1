@@ -33,7 +33,11 @@ RUN if ! cat /etc/group | grep -e "^pip-global:" > /dev/null 2>&1; then groupadd
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
-    libreoffice
+    libreoffice \
+    # pycairo - relatorio
+    libcairo2-dev pkg-config python3-dev \
+    # texexec - relatorio
+    context
 
 # Create directory and set permission
 RUN mkdir /opt/report-engine \ 
