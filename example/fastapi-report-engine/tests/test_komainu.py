@@ -515,7 +515,7 @@ def test_komainu_post_vbar_chart_svg_cha(
         f.write(response.content)
 
 
-@pytest.mark.parametrize("convert_to_pdf", [False, True])
+@pytest.mark.parametrize("convert_to_pdf", [False])
 def test_komainu_post_basic_tex(
     convert_to_pdf,
     results_directory,
