@@ -10,6 +10,7 @@ http://localhost/docs or http://localhost:8002/docs
 samples:
 - `./code/example/fastapi-report-engine/tests/samples/odt`
 - `./code/example/fastapi-report-engine/tests/samples/docx`
+- `./code/example/fastapi-report-engine/tests/samples/relatorio`
 
 ## odt - simple_template.odt
 
@@ -114,6 +115,64 @@ samples:
     },
     "file_basename": "rendered_{{name}}",
     "convert_to_pdf": true,
+    "pdf_filter_options": {}
+}
+
+```
+
+## relatorio - basic.tex, pie_chart.png.cha, vbar_chart.svg.cha
+
+- template: `basic.tex` or `pie_chart.png.cha` or `vbar_chart.svg.cha`
+- medias: (unckecked: `Send empty value`)
+- request:
+
+```json
+
+{
+    "context": {
+        "customer": {
+            "name": "John Bonham",
+            "address": {"street": "Smirnov street", "zip": 1000, "city": "Montreux"}
+        },
+        "lines": [
+            {
+                "item": {"name": "Vodka 70cl", "reference": "VDKA-001", "price": 10.34},
+                "quantity": 7,
+                "amount": 72.38
+            },
+            {
+                "item": {
+                    "name": "Cognac 70cl",
+                    "reference": "CGNC-067",
+                    "price": 13.46
+                },
+                "quantity": 12,
+                "amount": 161.52
+            },
+            {
+                "item": {
+                    "name": "Sparkling water 25cl",
+                    "reference": "WATR-007",
+                    "price": 4
+                },
+                "quantity": 1,
+                "amount": 4
+            },
+            {
+                "item": {
+                    "name": "Good customer",
+                    "reference": "BONM-001",
+                    "price": -20
+                },
+                "quantity": 1,
+                "amount": -20
+            }
+        ],
+        "id": "MZY-20080703",
+        "status": "late"
+    },
+    "file_basename": "relatorio_{{customer.name}}",
+    "convert_to_pdf": false,
     "pdf_filter_options": {}
 }
 
