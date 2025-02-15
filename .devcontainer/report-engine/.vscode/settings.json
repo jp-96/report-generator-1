@@ -1,6 +1,7 @@
 {
     "python.testing.pytestArgs": [
-        "."
+        ".",
+        "--ignore=${workspaceFolder}/code/tests/samples"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

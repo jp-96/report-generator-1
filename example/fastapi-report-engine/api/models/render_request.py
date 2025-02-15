@@ -11,3 +11,4 @@ class RenderRequest(JsonBaseModel):
     pdf_filter_options: dict = Field(
         default={}
     )  # See this link: https://help.libreoffice.org/latest/en-US/text/shared/guide/pdf_params.html
+    type: str = Field(default="auto")  # "auto", "docx", "odt", "relatorio"

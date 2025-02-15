@@ -13,7 +13,6 @@ def generate_report(
     request: RenderRequest,
     template: UploadFile,
     medias: Optional[List[UploadFile]],
-    type: str = "auto",  # "auto", "docx", "odt"
 ):
 
     def validate_mime_type(mime_type: str, is_disabled: bool = False):
@@ -25,12 +24,18 @@ def generate_report(
         return mime_type
 
     def get_type():
-        ret = type
-        if type == "auto":
+        ret = request.type
+        if request.type == "auto":
             if template.filename.endswith(".docx"):
                 ret = "docx"
             elif template.filename.endswith(".odt"):
                 ret = "odt"
+            elif template.filename.endswith(".png.cha"):
+                ret = "relatorio"
+            elif template.filename.endswith(".svg.cha"):
+                ret = "relatorio"
+            elif template.filename.endswith(".tex"):
+                ret = "relatorio"
         return ret
 
     generator = create_report_generator(
