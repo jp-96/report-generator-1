@@ -106,6 +106,29 @@ def python_png_file_reader(docx_directory):
     return open(file_path, "rb")
 
 
+@pytest.fixture
+def relatorio_directory(current_directory):
+    return os.path.join(current_directory, "samples/relatorio")
+
+
+@pytest.fixture
+def pie_chart_png_cha_file_reader(relatorio_directory):
+    file_path = Path(relatorio_directory).joinpath("pie_chart.png.cha")
+    return open(file_path, "rb")
+
+
+@pytest.fixture
+def vbar_chart_svg_cha_file_reader(relatorio_directory):
+    file_path = Path(relatorio_directory).joinpath("vbar_chart.svg.cha")
+    return open(file_path, "rb")
+
+
+@pytest.fixture
+def basic_tex_file_reader(relatorio_directory):
+    file_path = Path(relatorio_directory).joinpath("basic.tex")
+    return open(file_path, "rb")
+
+
 client = TestClient(app)
 
 
@@ -322,5 +345,254 @@ def test_komainu_post_replace_picture_tpl_docx(
         assert result_filename == "komainu_docx_replace_picture_python.pdf"
     else:
         assert result_filename == "komainu_docx_replace_picture_python.docx"
+    with open(os.path.join(results_directory, result_filename), "wb") as f:
+        f.write(response.content)
+
+
+@pytest.mark.parametrize("convert_to_pdf", [False, True])
+def test_komainu_post_pie_chart_png_cha(
+    convert_to_pdf,
+    results_directory,
+    pie_chart_png_cha_file_reader,
+):
+
+    context = {
+        "customer": {
+            "name": "John Bonham",
+            "address": {"street": "Smirnov street", "zip": 1000, "city": "Montreux"},
+        },
+        "lines": [
+            {
+                "item": {"name": "Vodka 70cl", "reference": "VDKA-001", "price": 10.34},
+                "quantity": 7,
+                "amount": 7 * 10.34,
+            },
+            {
+                "item": {
+                    "name": "Cognac 70cl",
+                    "reference": "CGNC-067",
+                    "price": 13.46,
+                },
+                "quantity": 12,
+                "amount": 12 * 13.46,
+            },
+            {
+                "item": {
+                    "name": "Sparkling water 25cl",
+                    "reference": "WATR-007",
+                    "price": 4,
+                },
+                "quantity": 1,
+                "amount": 4,
+            },
+            {
+                "item": {
+                    "name": "Good customer",
+                    "reference": "BONM-001",
+                    "price": -20,
+                },
+                "quantity": 1,
+                "amount": -20,
+            },
+        ],
+        "id": "MZY-20080703",
+        "status": "late",
+    }
+
+    request_data = {
+        "context": context,
+        "file_basename": "komainu_pie",
+        "convert_to_pdf": convert_to_pdf,
+        "pdf_filter_options": {},
+    }
+
+    files = {
+        "request": (None, json.dumps(request_data), "application/json"),
+        "template": (
+            "pie_chart.png.cha",
+            pie_chart_png_cha_file_reader,
+            "application/octet-stream",
+        ),
+    }
+
+    response = client.post("/komainu", files=files)
+    assert response.status_code == 200
+
+    if convert_to_pdf:
+        assert b"%PDF" in response.content
+    else:
+        assert b"PNG" in response.content
+
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_pie.pdf"
+    else:
+        assert result_filename == "komainu_pie.png"
+    with open(os.path.join(results_directory, result_filename), "wb") as f:
+        f.write(response.content)
+
+
+@pytest.mark.parametrize("convert_to_pdf", [False, True])
+def test_komainu_post_vbar_chart_svg_cha(
+    convert_to_pdf,
+    results_directory,
+    vbar_chart_svg_cha_file_reader,
+):
+
+    context = {
+        "customer": {
+            "name": "John Bonham",
+            "address": {"street": "Smirnov street", "zip": 1000, "city": "Montreux"},
+        },
+        "lines": [
+            {
+                "item": {"name": "Vodka 70cl", "reference": "VDKA-001", "price": 10.34},
+                "quantity": 7,
+                "amount": 7 * 10.34,
+            },
+            {
+                "item": {
+                    "name": "Cognac 70cl",
+                    "reference": "CGNC-067",
+                    "price": 13.46,
+                },
+                "quantity": 12,
+                "amount": 12 * 13.46,
+            },
+            {
+                "item": {
+                    "name": "Sparkling water 25cl",
+                    "reference": "WATR-007",
+                    "price": 4,
+                },
+                "quantity": 1,
+                "amount": 4,
+            },
+            {
+                "item": {
+                    "name": "Good customer",
+                    "reference": "BONM-001",
+                    "price": -20,
+                },
+                "quantity": 1,
+                "amount": -20,
+            },
+        ],
+        "id": "MZY-20080703",
+        "status": "late",
+    }
+
+    request_data = {
+        "context": context,
+        "file_basename": "komainu_vbar",
+        "convert_to_pdf": convert_to_pdf,
+        "pdf_filter_options": {},
+    }
+
+    files = {
+        "request": (None, json.dumps(request_data), "application/json"),
+        "template": (
+            "vbar_chart.svg.cha",
+            vbar_chart_svg_cha_file_reader,
+            "application/octet-stream",
+        ),
+    }
+
+    response = client.post("/komainu", files=files)
+    assert response.status_code == 200
+
+    if convert_to_pdf:
+        assert b"%PDF" in response.content
+    else:
+        assert b"<svg xmlns=" in response.content
+
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_vbar.pdf"
+    else:
+        assert result_filename == "komainu_vbar.svg"
+    with open(os.path.join(results_directory, result_filename), "wb") as f:
+        f.write(response.content)
+
+
+@pytest.mark.parametrize("convert_to_pdf", [False, True])
+def test_komainu_post_basic_tex(
+    convert_to_pdf,
+    results_directory,
+    basic_tex_file_reader,
+):
+
+    context = {
+        "customer": {
+            "name": "John Bonham",
+            "address": {"street": "Smirnov street", "zip": 1000, "city": "Montreux"},
+        },
+        "lines": [
+            {
+                "item": {"name": "Vodka 70cl", "reference": "VDKA-001", "price": 10.34},
+                "quantity": 7,
+                "amount": 7 * 10.34,
+            },
+            {
+                "item": {
+                    "name": "Cognac 70cl",
+                    "reference": "CGNC-067",
+                    "price": 13.46,
+                },
+                "quantity": 12,
+                "amount": 12 * 13.46,
+            },
+            {
+                "item": {
+                    "name": "Sparkling water 25cl",
+                    "reference": "WATR-007",
+                    "price": 4,
+                },
+                "quantity": 1,
+                "amount": 4,
+            },
+            {
+                "item": {
+                    "name": "Good customer",
+                    "reference": "BONM-001",
+                    "price": -20,
+                },
+                "quantity": 1,
+                "amount": -20,
+            },
+        ],
+        "id": "MZY-20080703",
+        "status": "late",
+    }
+
+    request_data = {
+        "context": context,
+        "file_basename": "komainu_basic_tex",
+        "convert_to_pdf": convert_to_pdf,
+        "pdf_filter_options": {},
+    }
+
+    files = {
+        "request": (None, json.dumps(request_data), "application/json"),
+        "template": (
+            "basic.tex",
+            basic_tex_file_reader,
+            "application/octet-stream",
+        ),
+    }
+
+    response = client.post("/komainu", files=files)
+    assert response.status_code == 200
+
+    if convert_to_pdf:
+        assert b"%PDF" in response.content
+    else:
+        assert b"%PDF" in response.content
+
+    result_filename = extract_filename_from_response(response)
+    if convert_to_pdf:
+        assert result_filename == "komainu_basic_tex.pdf"
+    else:
+        assert result_filename == "komainu_basic_tex.pdf"
     with open(os.path.join(results_directory, result_filename), "wb") as f:
         f.write(response.content)
