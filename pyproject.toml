@@ -15,8 +15,9 @@ name = "rptgen1"
 dynamic = ["version"]
 dependencies = [
   "unoserver",
-  "python_odt_template[standard] @ git+https://github.com/jp-96/python-odt-template.git@pathguard",
   "docxtpl",
+  "python_odt_template[standard] @ git+https://github.com/jp-one/python-odt-template-forked.git",
+  "relatorio[chart,fodt] @ git+https://github.com/jp-one/relatorio-forked.git",
 ]
 requires-python = ">=3.8"
 authors = [{ name = "jp-96" }]
