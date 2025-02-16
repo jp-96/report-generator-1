@@ -5,7 +5,7 @@
 To install the package from the remote GitHub repository, use the following command:
 
 ```bash
-sudo pip3 install --upgrade git+https://github.com/jp-96/report-generator-1.git --root-user-action=ignore
+sudo pip3 install --upgrade git+https://github.com/jp-one/report-generator-1.git --root-user-action=ignore
 ```
 
 This command will:
