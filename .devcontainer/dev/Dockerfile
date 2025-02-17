@@ -40,15 +40,15 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     context
 
 # Create directory and set permission
-RUN mkdir /opt/report-engine \ 
-    && chown -R vscode:vscode /opt/report-engine
-RUN mkdir /opt/report-engine/.vscode \
-    && chown vscode:vscode /opt/report-engine/.vscode
+RUN mkdir /home/vscode/dev \ 
+    && chown -R vscode:vscode /home/vscode/dev
+RUN mkdir /home/vscode/dev/.vscode \
+    && chown vscode:vscode /home/vscode/dev/.vscode
 RUN mkdir /home/vscode/.vscode-server \
     && chown vscode:vscode /home/vscode/.vscode-server
 
 # [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
-COPY ./report-engine/requirements_dev.txt /tmp/pip-tmp/
+COPY ./dev/requirements_dev.txt /tmp/pip-tmp/
 RUN pip3 install --upgrade pip
 RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements_dev.txt \
     && rm -rf /tmp/pip-tmp
