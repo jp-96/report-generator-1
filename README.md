@@ -28,7 +28,7 @@ sudo pip3 install --upgrade . --root-user-action=ignore
 
 ```
 
-These commands should be run in the code directory, which in the Docker environment is located at /opt/report-engine/code.
+These commands should be run in the code directory, which in the Docker environment is located at /home/vscode/dev/code.
 
 This sequence of commands will:
 1. Use pip3 to upgrade the build and pip packages.
